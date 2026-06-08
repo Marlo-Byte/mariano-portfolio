@@ -60,7 +60,7 @@ export default async function Home() {
       <main className="flex-grow">
         <Hero profile={profile} />
         <About profile={profile} />
-        <Projects projects={projects} />
+        <Projects projects={projects} githubUrl={profile.githubUrl} />
         <Skills skills={skills} />
         <Contact profile={profile} />
       </main>

@@ -8,6 +8,7 @@ import { ProjectType } from '@/sanity/mockData'
 
 interface ProjectsProps {
   projects: ProjectType[]
+  githubUrl?: string
 }
 
 function GithubIcon({ className }: { className?: string }) {
@@ -27,7 +28,7 @@ function GithubIcon({ className }: { className?: string }) {
   )
 }
 
-export function Projects({ projects }: ProjectsProps) {
+export function Projects({ projects, githubUrl }: ProjectsProps) {
   // Framer Motion container options
   const containerVariants = {
     hidden: {},
@@ -177,19 +178,21 @@ export function Projects({ projects }: ProjectsProps) {
         </motion.div>
         
         {/* Extra Bottom Call to Action */}
-        <div className="text-center mt-16">
-          <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-500">
-            ¿Quieres ver más proyectos de código abierto? Visita mi perfil de{' '}
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline font-semibold"
-            >
-              GitHub
-            </a>.
-          </p>
-        </div>
+        {githubUrl && (
+          <div className="text-center mt-16">
+            <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-500">
+              ¿Quieres ver más proyectos de código abierto? Visita mi perfil de{' '}
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary hover:underline font-semibold"
+              >
+                GitHub
+              </a>.
+            </p>
+          </div>
+        )}
 
       </div>
     </section>
