@@ -6,6 +6,7 @@ import { About } from '@/components/About'
 import { Projects } from '@/components/Projects'
 import { Skills } from '@/components/Skills'
 import { Contact } from '@/components/Contact'
+import { Footer } from '@/components/Footer'
 
 // Revalidate page data every 60 seconds (Incremental Static Regeneration)
 export const revalidate = 60
@@ -63,16 +64,7 @@ export default async function Home() {
         <Skills skills={skills} />
         <Contact profile={profile} />
       </main>
-      
-      {/* Footer */}
-      <footer className="py-8 text-center text-xs text-slate-500 dark:text-slate-600 border-t glass-effect">
-        <div className="max-w-7xl mx-auto px-4">
-          <p>© {new Date().getFullYear()} {profile.name}. Todos los derechos reservados.</p>
-          <p className="mt-1">
-            Construido con Next.js (App Router), TypeScript, Tailwind CSS y Sanity CMS.
-          </p>
-        </div>
-      </footer>
+      <Footer profile={profile} />
     </div>
   )
 }

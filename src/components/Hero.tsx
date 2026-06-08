@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowDown, Mail } from 'lucide-react'
+import { ArrowDown, Mail, Terminal } from 'lucide-react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/client'
 import { ProfileType } from '@/sanity/mockData'
@@ -57,46 +57,93 @@ export function Hero({ profile }: HeroProps) {
   }
   const finalAvatarUrl = avatarUrl || profile.avatarUrlFallback || ''
 
+  // Framer Motion staggered variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring' as const, stiffness: 100, damping: 15 },
+    },
+  }
+
+  const stackBadges = ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind v4', 'Sanity CMS']
+
   return (
-    <section id="home" className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden py-16 px-4 sm:px-6 lg:px-8">
-      {/* Glow Backdrops */}
+    <section id="home" className="relative min-h-[100vh] flex items-center justify-center overflow-hidden pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      
+      {/* Background Neon Gradients & Grid Pattern */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 w-72 md:w-96 h-72 md:h-96 rounded-full bg-primary/20 dark:bg-primary/10 blur-[90px] md:blur-[130px] animate-pulse duration-[9000ms]" />
-        <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 w-72 md:w-96 h-72 md:h-96 rounded-full bg-accent/20 dark:bg-accent/10 blur-[90px] md:blur-[130px] animate-pulse duration-[7000ms]" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] dark:opacity-[0.05]" />
+        {/* Glow Left (Primary color blur) */}
+        <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-primary/15 dark:bg-primary/5 blur-[100px] md:blur-[150px] animate-pulse duration-[8000ms]" />
+        {/* Glow Right (Cyan accent blur) */}
+        <div className="absolute bottom-1/4 right-1/3 translate-x-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-accent/15 dark:bg-accent/5 blur-[100px] md:blur-[150px] animate-pulse duration-[6000ms]" />
+        {/* Sleek dotted/grid texture */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.04] dark:opacity-[0.06]" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
-          {/* Left Side: Profile Intro */}
+          {/* Left Side: Staggered Profile Intro */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 order-2 lg:order-1"
           >
-            <span className="px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider text-primary bg-primary/10 dark:bg-primary/20 border border-primary/20 uppercase">
-              Disponible para proyectos
-            </span>
+            {/* Pulsing Badge */}
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider text-primary dark:text-indigo-300 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 uppercase">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 absolute" />
+              <span>Disponible para trabajar</span>
+            </motion.div>
 
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight">
+            {/* Heading Stagger */}
+            <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-none text-slate-900 dark:text-white">
               Hola, soy{' '}
-              <span className="bg-gradient-to-r from-primary via-indigo-500 to-accent bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-indigo-500 to-accent bg-clip-text text-transparent block sm:inline">
                 {profile.name}
               </span>
-            </h1>
+            </motion.h1>
 
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-medium text-slate-700 dark:text-slate-200">
-              {profile.role}
-            </h2>
+            {/* Subheading with neon-accent bar */}
+            <motion.div variants={itemVariants} className="space-y-1">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200">
+                {profile.role}
+              </h2>
+              <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto lg:mx-0" />
+            </motion.div>
 
-            <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
+            {/* Bio Description */}
+            <motion.p variants={itemVariants} className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
               {profile.bio}
-            </p>
+            </motion.p>
 
-            {/* Social Icons inside Hero */}
-            <div className="flex gap-4 pt-2 justify-center lg:justify-start">
+            {/* Micro Tech Tags */}
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-2 justify-center lg:justify-start">
+              {stackBadges.map((badge) => (
+                <span
+                  key={badge}
+                  className="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-800/50"
+                >
+                  {badge}
+                </span>
+              ))}
+            </motion.div>
+
+            {/* Social Links Panel */}
+            <motion.div variants={itemVariants} className="flex gap-3 pt-2 justify-center lg:justify-start">
               {profile.githubUrl && (
                 <a
                   href={profile.githubUrl}
@@ -128,9 +175,10 @@ export function Hero({ profile }: HeroProps) {
                   <Mail size={20} />
                 </a>
               )}
-            </div>
+            </motion.div>
 
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+            {/* Call To Action Buttons */}
+            <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <a
                 href="#projects"
                 className="px-8 py-3.5 rounded-xl text-white font-medium bg-primary hover:bg-primary-hover shadow-lg hover:shadow-primary/30 transition-all duration-200 neon-glow"
@@ -143,40 +191,81 @@ export function Hero({ profile }: HeroProps) {
               >
                 Hablemos
               </a>
-            </div>
+            </motion.div>
           </motion.div>
 
-          {/* Right Side: Photo with rotating gradient border */}
-          <motion.div
-            initial={{ opacity: 0, x: 30, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-5 flex justify-center items-center"
-          >
-            <div className="relative group w-64 h-64 sm:w-80 sm:h-80">
+          {/* Right Side: Floating Photo & Code Widget (Bento layout) */}
+          <div className="lg:col-span-5 flex justify-center items-center order-1 lg:order-2">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, type: 'spring', stiffness: 60 }}
+              className="relative w-72 h-72 sm:w-96 sm:h-96"
+            >
               
-              {/* Pulsing Backlight Effect */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-accent opacity-30 dark:opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-300" />
-              
-              {/* Rotating Gradient Frame */}
-              <div className="absolute inset-0 rounded-full p-[3px] bg-gradient-to-tr from-primary via-indigo-500 to-accent animate-spin duration-[12000ms]" />
+              {/* Backlight Ambient Glow */}
+              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-tr from-primary/30 to-accent/30 opacity-40 blur-2xl animate-pulse duration-[5000ms]" />
 
-              {/* Image Container */}
-              <div className="absolute inset-[3px] rounded-full overflow-hidden bg-slate-100 dark:bg-slate-900 border-2 border-slate-50 dark:border-slate-950">
-                {finalAvatarUrl && (
-                  <Image
-                    src={finalAvatarUrl}
-                    alt={profile.name}
-                    fill
-                    sizes="(max-width: 768px) 256px, 320px"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                    priority
-                    unoptimized={finalAvatarUrl.startsWith('http')}
-                  />
-                )}
-              </div>
-            </div>
-          </motion.div>
+              {/* Bento Box Photo Frame */}
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
+                className="relative w-full h-full rounded-[2rem] p-[2px] bg-gradient-to-tr from-primary/40 via-indigo-500/20 to-accent/40 shadow-2xl overflow-hidden"
+              >
+                <div className="absolute inset-[2px] rounded-[2rem] overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-200/20 dark:border-slate-800/40">
+                  {finalAvatarUrl && (
+                    <Image
+                      src={finalAvatarUrl}
+                      alt={profile.name}
+                      fill
+                      sizes="(max-width: 768px) 288px, 384px"
+                      className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-500"
+                      priority
+                      unoptimized={finalAvatarUrl.startsWith('http')}
+                    />
+                  )}
+                  {/* Subtle dark overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 to-transparent" />
+                </div>
+              </motion.div>
+
+              {/* Overlaid Translucent IDE Code Snippet widget */}
+              <motion.div
+                initial={{ x: 30, y: 30, opacity: 0 }}
+                animate={{ x: 0, y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
+                whileHover={{ scale: 1.05 }}
+                className="absolute -bottom-6 -left-6 sm:-left-12 glass-effect p-4 sm:p-5 rounded-2xl border shadow-xl flex flex-col space-y-2 max-w-[240px] sm:max-w-[280px]"
+              >
+                <div className="flex items-center gap-1.5 pb-2 border-b border-slate-200/50 dark:border-slate-800/50">
+                  <Terminal size={14} className="text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Mariano.ts</span>
+                  <div className="flex gap-1 ml-auto">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  </div>
+                </div>
+                
+                <code className="text-[10px] sm:text-xs font-mono text-slate-600 dark:text-slate-300 space-y-1">
+                  <p className="text-purple-500 dark:text-indigo-400">
+                    const <span className="text-blue-500 dark:text-cyan-400">dev</span> = &#123;
+                  </p>
+                  <p className="pl-3">
+                    name: <span className="text-emerald-600 dark:text-emerald-400">&apos;{profile.name}&apos;</span>,
+                  </p>
+                  <p className="pl-3">
+                    status: <span className="text-amber-500">&apos;{profile.role.split(' ')[0]}&apos;</span>,
+                  </p>
+                  <p className="pl-3">
+                    code: <span className="text-rose-500">true</span>
+                  </p>
+                  <p className="text-purple-500 dark:text-indigo-400">&#125;</p>
+                </code>
+              </motion.div>
+
+            </motion.div>
+          </div>
 
         </div>
 
@@ -184,7 +273,7 @@ export function Hero({ profile }: HeroProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
         >
           <a
