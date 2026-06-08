@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --primary: #6366f1; /* Indigo */
+  --primary-hover: #4f46e5;
+  --accent: #06b6d4; /* Cyan */
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(148, 163, 184, 0.1);
+}
+
+.dark {
+  --background: #030712; /* Deep Slate/Grey */
+  --foreground: #f8fafc;
+  --primary: #818cf8; /* Light Indigo */
+  --primary-hover: #6366f1;
+  --accent: #22d3ee; /* Light Cyan */
+  --card-bg: rgba(17, 24, 39, 0.6);
+  --card-border: rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Base Styles */
+html,
+body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Custom Background Patterns */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--card-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--card-border) 1px, transparent 1px);
+}
+
+/* Glow Effect */
+.neon-glow {
+  box-shadow: 0 0 25px -5px var(--primary), 0 0 15px -8px var(--accent);
+}
+
+/* Glassmorphism utility */
+.glass-effect {
+  background-color: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+}
