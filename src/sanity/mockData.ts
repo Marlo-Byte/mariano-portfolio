@@ -2,6 +2,9 @@ export interface ProfileType {
   _id: string
   name: string
   role: string
+  logoTitle?: string
+  logoCharacter?: string
+  logoSubtitle?: string
   avatar?: { asset: { _ref: string } } // Sanity image
   avatarUrlFallback?: string // Local placeholder if Sanity image is missing
   bio: string
@@ -90,6 +93,9 @@ export const mockProfile: ProfileType = {
   _id: 'mock-profile',
   name: 'Mariano',
   role: 'Desarrollador Frontend Full-Stack',
+  logoTitle: 'Mariano',
+  logoCharacter: 'M',
+  logoSubtitle: 'dev.studio',
   avatarUrlFallback: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&auto=format&fit=crop', // Professional male portrait
   bio: 'Desarrollador Frontend Full-Stack especializado en crear experiencias web excepcionales, rápidas y y escalables.',
   aboutTitle: 'Desarrollador enfocado en resolver problemas complejos de forma sencilla y eficiente.',

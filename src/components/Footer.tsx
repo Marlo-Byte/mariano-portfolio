@@ -96,7 +96,7 @@ export function Footer({ profile }: FooterProps) {
           <motion.div variants={childVariants} className="md:col-span-5 flex flex-col space-y-4">
             <a href="#home" className="inline-flex items-center gap-3 group">
               <span className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-extrabold text-lg shadow-md group-hover:rotate-6 transition-transform duration-300">
-                {profile.name.charAt(0)}
+                {profile.logoCharacter || profile.name.charAt(0)}
               </span>
               <div>
                 <span className="text-xl font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors duration-200">

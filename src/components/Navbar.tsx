@@ -94,13 +94,31 @@ export function Navbar({ profile }: NavbarProps) {
       >
         {/* Dynamic Logo */}
         <div className="flex-shrink-0">
-          <a href="#home" className="text-lg font-bold tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-extrabold text-base shadow-sm">
-              {profile.name.charAt(0)}
-            </span>
-            <span className="hidden sm:inline hover:text-primary transition-colors duration-200">
-              {profile.name}
-            </span>
+          <a href="#home" className="flex items-center gap-2.5 group select-none">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-slate-100/80 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60 overflow-hidden transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-md group-hover:shadow-primary/10">
+              {/* Dynamic colorful glowing background spot */}
+              <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-accent opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-300 blur-sm" />
+              
+              {/* Code bracket symbols enclosing the monogram */}
+              <div className="flex items-center justify-center font-mono text-sm font-bold text-slate-400 group-hover:text-primary transition-colors duration-300">
+                <span className="text-[10px] text-primary select-none opacity-60 group-hover:opacity-100 group-hover:-translate-x-[1px] transition-all">&lt;</span>
+                <span className="px-[3px] text-slate-800 dark:text-white font-extrabold text-sm tracking-tighter">
+                  {profile.logoCharacter || profile.name.charAt(0)}
+                </span>
+                <span className="text-[10px] text-accent select-none opacity-60 group-hover:opacity-100 group-hover:translate-x-[1px] transition-all">&gt;</span>
+              </div>
+            </div>
+            
+            {/* Title / Name */}
+            <div className="flex flex-col">
+              <span className="text-sm font-black tracking-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors duration-250 leading-none">
+                {profile.logoTitle || profile.name}
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1 leading-none flex items-center gap-1 select-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{profile.logoSubtitle || 'dev.studio'}</span>
+              </span>
+            </div>
           </a>
         </div>
 

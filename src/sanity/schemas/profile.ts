@@ -19,6 +19,28 @@ export const profile = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'logoTitle',
+      title: 'Título del Logo (Header)',
+      type: 'string',
+      description: 'Nombre o título principal que se muestra en el logo del encabezado. Si se deja vacío, se mostrará tu Nombre Completo.',
+      initialValue: 'Mariano',
+    }),
+    defineField({
+      name: 'logoCharacter',
+      title: 'Monograma/Letra del Logo',
+      type: 'string',
+      description: 'Letra o inicial que se muestra dentro del logo (Header y Footer). Ejemplo: M. Si se deja vacío, se usará la primera letra de tu Nombre.',
+      initialValue: 'M',
+      validation: (Rule) => Rule.max(3),
+    }),
+    defineField({
+      name: 'logoSubtitle',
+      title: 'Subtítulo del Logo (Header)',
+      type: 'string',
+      description: 'Subtítulo que se muestra debajo de tu nombre en el encabezado. Ejemplo: dev.studio',
+      initialValue: 'dev.studio',
+    }),
+    defineField({
       name: 'avatar',
       title: 'Foto de Perfil (Avatar)',
       type: 'image',
