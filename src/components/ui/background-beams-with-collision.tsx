@@ -15,50 +15,50 @@ export const BackgroundBeamsWithCollision = ({
  
   const beams = [
     {
-      initialX: 10,
-      translateX: 10,
+      initialX: "5vw",
+      translateX: "5vw",
       duration: 7,
       repeatDelay: 3,
       delay: 2,
     },
     {
-      initialX: 600,
-      translateX: 600,
+      initialX: "20vw",
+      translateX: "20vw",
       duration: 3,
       repeatDelay: 3,
       delay: 4,
     },
     {
-      initialX: 100,
-      translateX: 100,
+      initialX: "35vw",
+      translateX: "35vw",
       duration: 7,
       repeatDelay: 7,
       className: "h-6",
     },
     {
-      initialX: 400,
-      translateX: 400,
+      initialX: "50vw",
+      translateX: "50vw",
       duration: 5,
       repeatDelay: 14,
       delay: 4,
     },
     {
-      initialX: 800,
-      translateX: 800,
+      initialX: "65vw",
+      translateX: "65vw",
       duration: 11,
       repeatDelay: 2,
       className: "h-20",
     },
     {
-      initialX: 1000,
-      translateX: 1000,
+      initialX: "80vw",
+      translateX: "80vw",
       duration: 4,
       repeatDelay: 2,
       className: "h-12",
     },
     {
-      initialX: 1200,
-      translateX: 1200,
+      initialX: "95vw",
+      translateX: "95vw",
       duration: 6,
       repeatDelay: 4,
       delay: 2,
@@ -70,7 +70,7 @@ export const BackgroundBeamsWithCollision = ({
     <div
       ref={parentRef}
       className={cn(
-        "h-96 md:h-[40rem] bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
+        "h-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-neutral-800 relative flex items-center w-full justify-center overflow-hidden",
         // h-screen if you want bigger
         className
       )}
@@ -105,10 +105,10 @@ const CollisionMechanism = ({
   containerRef: React.RefObject<HTMLDivElement | null>;
   parentRef: React.RefObject<HTMLDivElement | null>;
   beamOptions?: {
-    initialX?: number;
-    translateX?: number;
-    initialY?: number;
-    translateY?: number;
+    initialX?: number | string;
+    translateX?: number | string;
+    initialY?: number | string;
+    translateY?: number | string;
     rotate?: number;
     className?: string;
     duration?: number;
