@@ -1,42 +1,62 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { SkillType } from '@/sanity/mockData'
+import { SkillType, SkillCategoryType } from '@/sanity/mockData'
 import { IconRenderer } from './IconRenderer'
 
 interface SkillsProps {
   skills: SkillType[]
+  categories: SkillCategoryType[]
 }
 
-export function Skills({ skills }: SkillsProps) {
-  // Group skills by category
-  const frontendSkills = skills.filter((s) => s.category === 'frontend')
-  const backendSkills = skills.filter((s) => s.category === 'backend')
-  const toolSkills = skills.filter((s) => s.category === 'tools')
-
-  const skillGroups = [
+export function Skills({ skills, categories }: SkillsProps) {
+  const gradientStyles = [
     { 
-      title: 'Frontend', 
-      list: frontendSkills, 
       color: 'from-blue-500 to-indigo-500', 
       glow: 'group-hover:border-blue-500/30 group-hover:shadow-blue-500/5',
       badgeColor: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
     },
     { 
-      title: 'Backend & DB', 
-      list: backendSkills, 
       color: 'from-purple-500 to-pink-500', 
       glow: 'group-hover:border-purple-500/30 group-hover:shadow-purple-500/5',
       badgeColor: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20'
     },
     { 
-      title: 'Herramientas & CMS', 
-      list: toolSkills, 
       color: 'from-teal-500 to-emerald-500', 
       glow: 'group-hover:border-teal-500/30 group-hover:shadow-teal-500/5',
       badgeColor: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20'
     },
+    { 
+      color: 'from-amber-500 to-orange-500', 
+      glow: 'group-hover:border-amber-500/30 group-hover:shadow-amber-500/5',
+      badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+    },
+    { 
+      color: 'from-cyan-500 to-sky-500', 
+      glow: 'group-hover:border-cyan-500/30 group-hover:shadow-cyan-500/5',
+      badgeColor: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20'
+    }
   ]
+
+  // Group skills dynamically by category
+  const skillGroups = categories.map((cat, idx) => {
+    const list = skills.filter((s) => {
+      if (!s.category) return false
+      const catId = typeof s.category === 'string' ? s.category : s.category._id
+      const catSlug = typeof s.category === 'string' ? s.category : s.category.slug?.current
+      
+      return catId === cat._id || catSlug === cat.slug?.current
+    })
+
+    const style = gradientStyles[idx % gradientStyles.length]
+
+    return {
+      _id: cat._id,
+      title: cat.title,
+      list,
+      ...style
+    }
+  })
 
   const containerVariants = {
     hidden: {},
@@ -80,7 +100,7 @@ export function Skills({ skills }: SkillsProps) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {skillGroups.map((group, groupIdx) => (
             <motion.div

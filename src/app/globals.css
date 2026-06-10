@@ -75,3 +75,15 @@ body {
   border: 1px solid var(--card-border);
 }
 
+/* Devicon color overrides for Dark Mode */
+.dark .devicon-nextjs-original.colored,
+.dark .devicon-nextjs-plain.colored,
+.dark .devicon-github-original.colored,
+.dark .devicon-github-plain.colored,
+.dark .devicon-vercel-original.colored,
+.dark .devicon-vercel-plain.colored,
+.dark .devicon-express-original.colored {
+  color: #ffffff !important;
+}
+
+

@@ -1,5 +1,5 @@
 import { client } from '@/sanity/client'
-import { ProfileType, ProjectType, SkillType, mockProfile, mockProjects, mockSkills } from '@/sanity/mockData'
+import { ProfileType, ProjectType, SkillType, SkillCategoryType, mockProfile, mockProjects, mockSkills, mockSkillCategories } from '@/sanity/mockData'
 import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { About } from '@/components/About'
@@ -21,24 +21,31 @@ async function getData() {
       profile: mockProfile,
       projects: mockProjects,
       skills: mockSkills,
+      categories: mockSkillCategories,
     }
   }
 
   try {
     const profileQuery = `*[_type == "profile"][0]`
-    const projectsQuery = `*[_type == "project"] | order(order asc)`
-    const skillsQuery = `*[_type == "skill"] | order(order asc)`
+    const projectsQuery = `*[_type == "project"] | order(orderRank asc, order asc)`
+    const categoriesQuery = `*[_type == "skillCategory"] | order(orderRank asc, title asc)`
+    const skillsQuery = `*[_type == "skill"] {
+      ...,
+      category->
+    } | order(orderRank asc, order asc)`
 
-    // Fetch profile, projects and skills in parallel
-    const [profile, projects, skills] = await Promise.all([
+    // Fetch profile, projects, categories and skills in parallel
+    const [profile, projects, categories, skills] = await Promise.all([
       client.fetch<ProfileType | null>(profileQuery),
       client.fetch<ProjectType[]>(projectsQuery),
+      client.fetch<SkillCategoryType[]>(categoriesQuery),
       client.fetch<SkillType[]>(skillsQuery),
     ])
 
     return {
       profile: profile || mockProfile,
       projects: projects && projects.length > 0 ? projects : mockProjects,
+      categories: categories && categories.length > 0 ? categories : mockSkillCategories,
       skills: skills && skills.length > 0 ? skills : mockSkills,
     }
   } catch (error) {
@@ -47,12 +54,13 @@ async function getData() {
       profile: mockProfile,
       projects: mockProjects,
       skills: mockSkills,
+      categories: mockSkillCategories,
     }
   }
 }
 
 export default async function Home() {
-  const { profile, projects, skills } = await getData()
+  const { profile, projects, skills, categories } = await getData()
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -61,7 +69,7 @@ export default async function Home() {
         <Hero profile={profile} />
         <About profile={profile} />
         <Projects projects={projects} githubUrl={profile.githubUrl} />
-        <Skills skills={skills} />
+        <Skills skills={skills} categories={categories} />
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />

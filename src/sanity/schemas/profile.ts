@@ -125,7 +125,31 @@ export const profile = defineType({
           fields: [
             defineField({ name: 'title', title: 'Título', type: 'string', validation: (Rule) => Rule.required() }),
             defineField({ name: 'description', title: 'Descripción', type: 'text', validation: (Rule) => Rule.required() }),
-            defineField({ name: 'icon', title: 'Icono de Lucide (Ej. Code, Rocket, Sparkles)', type: 'string', validation: (Rule) => Rule.required() }),
+            defineField({
+              name: 'icon',
+              title: 'Icono Destacado (FontAwesome)',
+              type: 'string',
+              description: 'Elige un icono de la lista de FontAwesome para este destacado.',
+              options: {
+                list: [
+                  { title: 'Código (faCode)', value: 'faCode' },
+                  { title: 'Cohete / Lanzamiento (faRocket)', value: 'faRocket' },
+                  { title: 'Brillo / Varita (faWandMagicSparkles)', value: 'faWandMagicSparkles' },
+                  { title: 'Servidor / Backend (faServer)', value: 'faServer' },
+                  { title: 'Corazón / Pasión (faHeart)', value: 'faHeart' },
+                  { title: 'Escudo / Seguridad (faShieldHalved)', value: 'faShieldHalved' },
+                  { title: 'Usuarios / Equipo (faUsers)', value: 'faUsers' },
+                  { title: 'Fuego / Energía (faFire)', value: 'faFire' },
+                  { title: 'Rayo / Velocidad (faBolt)', value: 'faBolt' },
+                  { title: 'Gráfico / Tendencia (faChartLine)', value: 'faChartLine' },
+                  { title: 'Planeta / Web (faGlobe)', value: 'faGlobe' },
+                  { title: 'Bombilla / Ideas (faLightbulb)', value: 'faLightbulb' },
+                  { title: 'Mensaje / Chat (faMessage)', value: 'faMessage' },
+                  { title: 'Café (faCoffee)', value: 'faCoffee' },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            }),
           ]
         }
       ],

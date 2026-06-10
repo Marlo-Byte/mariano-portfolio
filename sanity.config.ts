@@ -1,6 +1,7 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { schemaTypes } from '@/sanity/schemas'
+import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'placeholder'
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
@@ -16,7 +17,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: (S) =>
+      structure: (S, context) =>
         S.list()
           .title('Administración')
           .items([
@@ -30,8 +31,24 @@ export default defineConfig({
                   .title('Perfil de Usuario')
               ),
             S.divider(),
-            S.documentTypeListItem('project').title('Proyectos'),
-            S.documentTypeListItem('skill').title('Habilidades'),
+            orderableDocumentListDeskItem({
+              type: 'project',
+              title: 'Proyectos (Arrastrar para ordenar)',
+              S,
+              context,
+            }),
+            orderableDocumentListDeskItem({
+              type: 'skill',
+              title: 'Habilidades (Arrastrar para ordenar)',
+              S,
+              context,
+            }),
+            orderableDocumentListDeskItem({
+              type: 'skillCategory',
+              title: 'Categorías de Habilidades (Arrastrar)',
+              S,
+              context,
+            }),
           ]),
     }),
   ],

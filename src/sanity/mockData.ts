@@ -33,11 +33,17 @@ export interface ProjectType {
   imageUrlFallback?: string // Local placeholder if Sanity image is missing
 }
 
+export interface SkillCategoryType {
+  _id: string
+  title: string
+  slug: { current: string }
+}
+
 export interface SkillType {
   _id: string
   name: string
-  category: 'frontend' | 'backend' | 'tools'
-  icon: string // Lucide icon name
+  category: string | SkillCategoryType | null
+  icon: string
 }
 
 export const mockProjects: ProjectType[] = [
@@ -73,20 +79,26 @@ export const mockProjects: ProjectType[] = [
   },
 ]
 
+export const mockSkillCategories: SkillCategoryType[] = [
+  { _id: 'cat-frontend', title: 'Frontend', slug: { current: 'frontend' } },
+  { _id: 'cat-backend', title: 'Backend & DB', slug: { current: 'backend' } },
+  { _id: 'cat-tools', title: 'Herramientas & CMS', slug: { current: 'tools' } },
+]
+
 export const mockSkills: SkillType[] = [
   // Frontend
-  { _id: 'mock-s1', name: 'React', category: 'frontend', icon: 'Code' },
-  { _id: 'mock-s2', name: 'Next.js', category: 'frontend', icon: 'Layout' },
-  { _id: 'mock-s3', name: 'TypeScript', category: 'frontend', icon: 'Code' },
-  { _id: 'mock-s4', name: 'Tailwind CSS', category: 'frontend', icon: 'Layers' },
+  { _id: 'mock-s1', name: 'React', category: 'cat-frontend', icon: 'devicon-react-original' },
+  { _id: 'mock-s2', name: 'Next.js', category: 'cat-frontend', icon: 'devicon-nextjs-original' },
+  { _id: 'mock-s3', name: 'TypeScript', category: 'cat-frontend', icon: 'devicon-typescript-original' },
+  { _id: 'mock-s4', name: 'Tailwind CSS', category: 'cat-frontend', icon: 'devicon-tailwindcss-original' },
   // Backend
-  { _id: 'mock-s5', name: 'Node.js', category: 'backend', icon: 'Cpu' },
-  { _id: 'mock-s6', name: 'PostgreSQL', category: 'backend', icon: 'Database' },
-  { _id: 'mock-s7', name: 'Express', category: 'backend', icon: 'Terminal' },
+  { _id: 'mock-s5', name: 'Node.js', category: 'cat-backend', icon: 'devicon-nodejs-original' },
+  { _id: 'mock-s6', name: 'PostgreSQL', category: 'cat-backend', icon: 'devicon-postgresql-original' },
+  { _id: 'mock-s7', name: 'Express', category: 'cat-backend', icon: 'devicon-express-original' },
   // Tools
-  { _id: 'mock-s8', name: 'Git & GitHub', category: 'tools', icon: 'GitBranch' },
-  { _id: 'mock-s9', name: 'Docker', category: 'tools', icon: 'Box' },
-  { _id: 'mock-s10', name: 'Sanity CMS', category: 'tools', icon: 'Settings' },
+  { _id: 'mock-s8', name: 'Git & GitHub', category: 'cat-tools', icon: 'devicon-github-original' },
+  { _id: 'mock-s9', name: 'Docker', category: 'cat-tools', icon: 'devicon-docker-original' },
+  { _id: 'mock-s10', name: 'Sanity CMS', category: 'cat-tools', icon: 'devicon-sanity-original' },
 ]
 
 export const mockProfile: ProfileType = {
@@ -111,17 +123,17 @@ export const mockProfile: ProfileType = {
   ],
   highlights: [
     {
-      icon: 'Code',
+      icon: 'faCode',
       title: 'Desarrollo Frontend',
       description: 'Creación de SPAs e interfaces del lado del cliente altamente interactivas con React y TypeScript.',
     },
     {
-      icon: 'Rocket',
+      icon: 'faRocket',
       title: 'Rendimiento y SEO',
       description: 'Optimización de carga e indexación SEO utilizando características avanzadas de Next.js (SSR, ISR).',
     },
     {
-      icon: 'Sparkles',
+      icon: 'faWandMagicSparkles',
       title: 'Aesthetics & UI/UX',
       description: 'Pasión por los detalles visuales, el diseño responsive y animaciones pulidas pero no intrusivas.',
     },
