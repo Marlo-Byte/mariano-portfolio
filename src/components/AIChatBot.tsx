@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageSquare, X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react'
+import { X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react'
 import { ProfileType } from '@/sanity/mockData'
 
 interface Message {
@@ -21,6 +21,23 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(false)
+
+  useEffect(() => {
+    // Show tooltip after 3 seconds, hide after 10 seconds
+    const showTimer = setTimeout(() => {
+      setShowWelcomeTooltip(true)
+    }, 3000)
+
+    const hideTimer = setTimeout(() => {
+      setShowWelcomeTooltip(false)
+    }, 10000)
+
+    return () => {
+      clearTimeout(showTimer)
+      clearTimeout(hideTimer)
+    }
+  }, [])
   
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -245,44 +262,91 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
       </AnimatePresence>
 
       {/* Floating Action Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent hover:scale-105 active:scale-95 text-white flex items-center justify-center shadow-lg hover:shadow-primary/25 cursor-pointer transition-all duration-200 relative group overflow-hidden"
-        aria-label="Abrir Asistente de IA"
-      >
-        {/* Pulsing ring outline */}
-        <span className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-primary to-accent opacity-65 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-ping duration-[3000ms]" />
-        
-        {/* Glow spotlight inside */}
-        <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        <div className="relative z-10 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            {isOpen ? (
-              <motion.div
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <X size={22} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="chat"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center justify-center"
-              >
-                <MessageSquare size={22} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </button>
+      <div className="relative group">
+        {/* Tooltip */}
+        {!isOpen && (
+          <div
+            className={`hidden sm:flex absolute right-full mr-4 top-1/2 -translate-y-1/2 whitespace-nowrap px-3.5 py-2 rounded-2xl text-[11px] font-extrabold text-slate-800 dark:text-slate-100 border border-slate-200/50 dark:border-slate-800/50 shadow-xl backdrop-blur-md bg-white/95 dark:bg-slate-950/95 pointer-events-none transition-all duration-300 items-center gap-2 z-30 ${
+              showWelcomeTooltip
+                ? 'opacity-100 translate-x-0 scale-100'
+                : 'opacity-0 translate-x-3 scale-95 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100'
+            }`}
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>¿Tienes alguna duda? ¡Pregúntame! ✨</span>
+            {/* Tiny arrow pointing to the button */}
+            <div className="absolute top-1/2 -translate-y-1/2 left-full w-0 h-0 border-y-[6px] border-y-transparent border-l-[6px] border-l-white/95 dark:border-l-slate-950/95" />
+          </div>
+        )}
+
+        <motion.button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-15 h-15 rounded-full text-white flex items-center justify-center shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/45 cursor-pointer relative"
+          aria-label="Abrir Asistente de IA"
+          animate={isOpen ? {} : { y: [0, -6, 0] }}
+          transition={isOpen ? {} : { repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {/* Glowing Aura Behind */}
+          <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary to-accent opacity-30 blur-lg group-hover:opacity-60 transition-opacity duration-300" />
+
+          {/* Rotating Outer Neon Ring */}
+          <motion.div
+            className="absolute -inset-[3px] rounded-full bg-gradient-to-r from-primary via-accent to-pink-500 z-0"
+            animate={isOpen ? { rotate: 0 } : { rotate: 360 }}
+            transition={isOpen ? {} : { repeat: Infinity, duration: 6, ease: 'linear' }}
+          />
+
+          {/* Border Mask to separate neon border and main gradient */}
+          <span className="absolute inset-[0.5px] rounded-full bg-white dark:bg-slate-950 z-[1] transition-colors duration-300" />
+
+          {/* Main Gradient Sphere */}
+          <span className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-primary via-primary-hover to-accent z-[2] group-hover:brightness-110 transition-all duration-300" />
+
+          {/* 3D Glass Reflection Shine */}
+          <span className="absolute inset-[3px] top-[3px] h-[45%] rounded-t-full bg-gradient-to-b from-white/30 to-transparent z-[3] pointer-events-none" />
+
+          {/* Bouncing AI Sparkles Badge */}
+          {!isOpen && (
+            <span className="absolute -top-1.5 -right-1.5 w-5.5 h-5.5 rounded-full bg-accent border-2 border-white dark:border-slate-950 flex items-center justify-center text-white shadow-md animate-bounce z-20">
+              <Sparkles size={10} className="fill-white text-white" />
+            </span>
+          )}
+
+          {/* Icon Container */}
+          <div className="relative z-10 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              {isOpen ? (
+                <motion.div
+                  key="close"
+                  initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-center"
+                >
+                  <X size={20} className="stroke-[2.5]" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="chat"
+                  initial={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-center"
+                >
+                  <Bot size={24} className="stroke-[2] group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.button>
+      </div>
     </div>
   )
 }
