@@ -8,6 +8,7 @@ import { Projects } from '@/components/Projects'
 import { Skills } from '@/components/Skills'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
+import { AIChatBot } from '@/components/AIChatBot'
 
 // Revalidate page data every 60 seconds (Incremental Static Regeneration)
 export const revalidate = 60
@@ -80,6 +81,7 @@ export default async function Home() {
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />
+      {profile.aiEnabled !== false && <AIChatBot profile={profile} />}
     </div>
   )
 }
