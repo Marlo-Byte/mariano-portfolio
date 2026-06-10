@@ -114,12 +114,12 @@ export const mockSkills: SkillType[] = [
 
 export const mockProfile: ProfileType = {
   _id: 'mock-profile',
-  name: 'Mariano',
+  name: 'Mariano Lopez',
   role: 'Desarrollador Frontend Full-Stack',
   logoTitle: 'Mariano',
   logoCharacter: 'M',
   logoSubtitle: 'dev.studio',
-  avatarUrlFallback: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&auto=format&fit=crop', // Professional male portrait
+  avatarUrlFallback: '/default-avatar.svg',
   bio: 'Desarrollador Frontend Full-Stack especializado en crear experiencias web excepcionales, rápidas y y escalables.',
   aboutTitle: 'Desarrollador enfocado en resolver problemas complejos de forma sencilla y eficiente.',
   about: 'Me apasiona la intersección entre el código limpio, el rendimiento técnico y la estética visual. Constantemente busco mejorar la experiencia de usuario y estructurar aplicaciones que sean fáciles de escalar y mantener.\n\nHe trabajado con startups y empresas de software en la construcción de productos desde cero. Mi enfoque se centra en utilizar herramientas modernas para potenciar las marcas en entornos digitales de alta competencia.',
