@@ -1,8 +1,9 @@
 import { client } from '@/sanity/client'
-import { ProfileType, ProjectType, SkillType, SkillCategoryType, mockProfile, mockProjects, mockSkills, mockSkillCategories } from '@/sanity/mockData'
+import { ProfileType, ProjectType, SkillType, SkillCategoryType, EducationType, mockProfile, mockProjects, mockSkills, mockSkillCategories, mockEducation } from '@/sanity/mockData'
 import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { About } from '@/components/About'
+import { Education } from '@/components/Education'
 import { Projects } from '@/components/Projects'
 import { Skills } from '@/components/Skills'
 import { Contact } from '@/components/Contact'
@@ -22,6 +23,7 @@ async function getData() {
       projects: mockProjects,
       skills: mockSkills,
       categories: mockSkillCategories,
+      education: mockEducation,
     }
   }
 
@@ -33,13 +35,15 @@ async function getData() {
       ...,
       category->
     } | order(orderRank asc, order asc)`
+    const educationQuery = `*[_type == "education"] | order(orderRank asc, startDate desc)`
 
-    // Fetch profile, projects, categories and skills in parallel
-    const [profile, projects, categories, skills] = await Promise.all([
+    // Fetch profile, projects, categories, skills and education in parallel
+    const [profile, projects, categories, skills, education] = await Promise.all([
       client.fetch<ProfileType | null>(profileQuery),
       client.fetch<ProjectType[]>(projectsQuery),
       client.fetch<SkillCategoryType[]>(categoriesQuery),
       client.fetch<SkillType[]>(skillsQuery),
+      client.fetch<EducationType[]>(educationQuery),
     ])
 
     return {
@@ -47,6 +51,7 @@ async function getData() {
       projects: projects && projects.length > 0 ? projects : mockProjects,
       categories: categories && categories.length > 0 ? categories : mockSkillCategories,
       skills: skills && skills.length > 0 ? skills : mockSkills,
+      education: education && education.length > 0 ? education : mockEducation,
     }
   } catch (error) {
     console.error('Error fetching data from Sanity, using fallback mock data:', error)
@@ -55,12 +60,13 @@ async function getData() {
       projects: mockProjects,
       skills: mockSkills,
       categories: mockSkillCategories,
+      education: mockEducation,
     }
   }
 }
 
 export default async function Home() {
-  const { profile, projects, skills, categories } = await getData()
+  const { profile, projects, skills, categories, education } = await getData()
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -68,6 +74,7 @@ export default async function Home() {
       <main className="flex-grow">
         <Hero profile={profile} />
         <About profile={profile} />
+        <Education education={education} />
         <Projects projects={projects} githubUrl={profile.githubUrl} />
         <Skills skills={skills} categories={categories} />
         <Contact profile={profile} />

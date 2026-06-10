@@ -34,7 +34,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
       </head>
       <body
-        className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-[#030712] dark:text-slate-100 transition-colors duration-300"
+        className="min-h-full flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/20 to-cyan-50/20 bg-fixed text-slate-900 dark:from-[#030712] dark:via-[#090f1d] dark:to-[#030712] dark:text-slate-100 transition-colors duration-300"
         suppressHydrationWarning
       >
         <ThemeProvider

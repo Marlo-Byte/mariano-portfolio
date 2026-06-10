@@ -77,7 +77,7 @@ export function Skills({ skills, categories }: SkillsProps) {
   }
 
   return (
-    <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300 relative">
+    <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-cyan-50/20 dark:bg-transparent transition-colors duration-300 relative">
       {/* Background glow in center */}
       <div className="absolute top-1/2 left-1/3 w-80 h-80 rounded-full bg-primary/5 blur-[100px] -z-10" />
 
@@ -89,7 +89,7 @@ export function Skills({ skills, categories }: SkillsProps) {
             Habilidades Técnicas
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
-          <p className="text-slate-500 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
             Las tecnologías, lenguajes y metodologías que utilizo para dar vida a los proyectos web.
           </p>
         </div>
@@ -131,7 +131,7 @@ export function Skills({ skills, categories }: SkillsProps) {
                     <motion.div
                       key={skill._id}
                       whileHover={{ scale: 1.04, y: -2 }}
-                      className="p-4 bg-slate-100/30 dark:bg-slate-800/20 hover:bg-white dark:hover:bg-slate-800/60 rounded-2xl border border-slate-200/30 dark:border-slate-800/30 hover:border-slate-200/80 dark:hover:border-slate-700/80 hover:shadow-md flex flex-col justify-center items-center text-center transition-all duration-300 group/item relative overflow-hidden"
+                      className="p-4 bg-slate-100/50 dark:bg-slate-800/20 hover:bg-white dark:hover:bg-slate-800/60 rounded-2xl border border-slate-200/50 dark:border-slate-800/30 hover:border-slate-200/80 dark:hover:border-slate-700/80 hover:shadow-md flex flex-col justify-center items-center text-center transition-all duration-300 group/item relative overflow-hidden"
                     >
                       {/* Glow card indicator */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-accent/5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 -z-10" />

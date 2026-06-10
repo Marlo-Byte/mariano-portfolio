@@ -59,7 +59,7 @@ export function About({ profile }: AboutProps) {
   }
 
   return (
-    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300 relative">
+    <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-white/30 dark:bg-transparent transition-colors duration-300 relative">
       {/* Ambient background blur inside the section */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-accent/5 blur-[100px] -z-10" />
 
@@ -71,7 +71,7 @@ export function About({ profile }: AboutProps) {
             Sobre Mí
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
-          <p className="text-slate-500 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
             Conoce mi trayectoria, valores profesionales y las métricas que definen mi trabajo.
           </p>
         </div>
@@ -212,7 +212,7 @@ export function About({ profile }: AboutProps) {
                   <h4 className="font-extrabold text-slate-800 dark:text-slate-100 text-lg group-hover:text-primary transition-colors duration-200">
                     {item.title}
                   </h4>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {item.description}
                   </p>
                 </div>

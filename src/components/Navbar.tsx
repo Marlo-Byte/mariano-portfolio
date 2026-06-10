@@ -43,7 +43,7 @@ export function Navbar({ profile }: NavbarProps) {
     }
 
     const observer = new IntersectionObserver(observerCallback, observerOptions)
-    const sections = ['home', 'about', 'projects', 'skills', 'contact']
+    const sections = ['home', 'about', 'education', 'projects', 'skills', 'contact']
     
     sections.forEach((id) => {
       const el = document.getElementById(id)
@@ -78,6 +78,7 @@ export function Navbar({ profile }: NavbarProps) {
   const menuItems = [
     { label: 'Inicio', id: 'home', href: '#home' },
     { label: 'Sobre Mí', id: 'about', href: '#about' },
+    { label: 'Educación', id: 'education', href: '#education' },
     { label: 'Proyectos', id: 'projects', href: '#projects' },
     { label: 'Habilidades', id: 'skills', href: '#skills' },
     { label: 'Contacto', id: 'contact', href: '#contact' },
@@ -199,7 +200,7 @@ export function Navbar({ profile }: NavbarProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-slate-950/40 dark:bg-slate-950/60 backdrop-blur-lg md:hidden flex flex-col justify-center items-center"
+            className="fixed inset-0 z-40 bg-white/80 dark:bg-slate-950/70 backdrop-blur-xl md:hidden flex flex-col justify-center items-center"
           >
             <motion.nav
               initial={{ y: 20, opacity: 0 }}

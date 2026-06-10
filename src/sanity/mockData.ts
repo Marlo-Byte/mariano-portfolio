@@ -46,6 +46,17 @@ export interface SkillType {
   icon: string
 }
 
+export interface EducationType {
+  _id: string
+  institution: string
+  degree: string
+  startDate: string
+  endDate: string
+  description?: string
+  certificate?: { asset: { _ref: string } }
+  certificateUrlFallback?: string
+}
+
 export const mockProjects: ProjectType[] = [
   {
     _id: 'mock-p1',
@@ -141,3 +152,32 @@ export const mockProfile: ProfileType = {
   location: 'Buenos Aires, Argentina',
   timezone: 'UTC-3 (Horario local)',
 }
+
+export const mockEducation: EducationType[] = [
+  {
+    _id: 'mock-edu-1',
+    institution: 'Universidad Tecnológica Nacional (UTN)',
+    degree: 'Licenciatura en Sistemas de Información',
+    startDate: '2021',
+    endDate: 'Presente',
+    description: 'Enfoque en arquitectura de software, gestión de bases de datos, algoritmos complejos y administración de redes. Participación activa en proyectos de desarrollo académico.'
+  },
+  {
+    _id: 'mock-edu-2',
+    institution: 'Desarrollo Web & Frontend Bootcamp',
+    degree: 'Especialización Frontend (React/TypeScript/Next.js)',
+    startDate: '2022',
+    endDate: '2023',
+    description: 'Programa intensivo cubriendo Next.js App Router, React 19, TypeScript, metodologías ágiles, y construcción de aplicaciones del lado del cliente altamente interactivas.',
+    certificateUrlFallback: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+  },
+  {
+    _id: 'mock-edu-3',
+    institution: 'Certificación Profesional Platzi / Coderhouse',
+    degree: 'Diseño de Interfaces (UI/UX) y Animaciones Web',
+    startDate: '2023',
+    endDate: '2023',
+    description: 'Curso de diseño UI/UX centrado en accesibilidad, micro-animaciones con Framer Motion, consistencia visual, layouts responsive y optimización UX.',
+    certificateUrlFallback: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+  }
+]

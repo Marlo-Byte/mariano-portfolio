@@ -70,7 +70,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
   }
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300 relative">
+    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/50 dark:border-slate-800/50 bg-white/20 dark:bg-transparent transition-colors duration-300 relative">
       {/* Background glow */}
       <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-accent/5 blur-[120px] -z-10 animate-pulse duration-[8000ms]" />
 
@@ -82,7 +82,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
             Ponte en Contacto
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
-          <p className="text-slate-500 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
             ¿Tienes algún proyecto en mente o quieres charlar? Escríbeme y te responderé lo antes posible.
           </p>
         </div>
@@ -103,7 +103,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                 <h3 className="text-lg font-extrabold text-slate-800 dark:text-white">
                   Contacto Directo
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   ¿Prefieres un email tradicional? Puedes escribirme directamente o copiar mi dirección aquí:
                 </p>
               </div>
@@ -158,7 +158,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                     disabled={status === 'loading'}
-                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 text-slate-850 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 text-sm"
+                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 focus:bg-white dark:focus:bg-slate-900/80 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 text-sm"
                     required
                   />
                   <label
@@ -166,7 +166,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     className={`absolute left-4 pointer-events-none transition-all duration-200 ${
                       isLabelFloated('name')
                         ? 'top-2 text-[10px] font-bold text-primary uppercase tracking-wider'
-                        : 'top-4.5 text-sm text-slate-400 dark:text-slate-500'
+                        : 'top-4.5 text-sm text-slate-500 dark:text-slate-500'
                     }`}
                   >
                     Nombre Completo
@@ -184,7 +184,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                     disabled={status === 'loading'}
-                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 text-slate-850 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 text-sm"
+                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 focus:bg-white dark:focus:bg-slate-900/80 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 text-sm"
                     required
                   />
                   <label
@@ -192,7 +192,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     className={`absolute left-4 pointer-events-none transition-all duration-200 ${
                       isLabelFloated('email')
                         ? 'top-2 text-[10px] font-bold text-primary uppercase tracking-wider'
-                        : 'top-4.5 text-sm text-slate-400 dark:text-slate-500'
+                        : 'top-4.5 text-sm text-slate-500 dark:text-slate-500'
                     }`}
                   >
                     Correo Electrónico
@@ -210,7 +210,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     onFocus={() => setFocusedField('message')}
                     onBlur={() => setFocusedField(null)}
                     disabled={status === 'loading'}
-                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 text-slate-850 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 resize-none text-sm"
+                    className="w-full px-4 pt-6 pb-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 focus:bg-white dark:focus:bg-slate-900/80 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all disabled:opacity-50 resize-none text-sm"
                     required
                   />
                   <label
@@ -218,7 +218,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
                     className={`absolute left-4 pointer-events-none transition-all duration-200 ${
                       isLabelFloated('message')
                         ? 'top-2 text-[10px] font-bold text-primary uppercase tracking-wider'
-                        : 'top-4.5 text-sm text-slate-400 dark:text-slate-500'
+                        : 'top-4.5 text-sm text-slate-500 dark:text-slate-500'
                     }`}
                   >
                     Escribe tu mensaje...

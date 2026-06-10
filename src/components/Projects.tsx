@@ -49,7 +49,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
   }
 
   return (
-    <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 border-t transition-colors duration-300 relative">
+    <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/50 dark:border-slate-800/50 transition-colors duration-300 relative">
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/5 blur-[120px] -z-10 animate-pulse duration-[10000ms]" />
 
@@ -61,7 +61,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
             Proyectos Destacados
           </h2>
           <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
-          <p className="text-slate-500 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-600 dark:text-slate-400 mt-4 max-w-xl mx-auto text-sm sm:text-base">
             Una selección de aplicaciones web recientes que demuestran mi experiencia técnica y enfoque en la calidad.
           </p>
         </div>
@@ -127,7 +127,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
                     </h3>
                     
                     {/* Description */}
-                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                       {project.description}
                     </p>
 

@@ -128,7 +128,7 @@ export function Hero({ profile }: HeroProps) {
               </motion.div>
 
               {/* Bio Description */}
-              <motion.p variants={itemVariants} className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
+              <motion.p variants={itemVariants} className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
                 {profile.bio}
               </motion.p>
 
@@ -162,7 +162,7 @@ export function Hero({ profile }: HeroProps) {
                     href={profile.linkedinUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl glass-effect text-slate-650 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-200"
+                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-200"
                     aria-label="LinkedIn"
                   >
                     <LinkedinIcon className="w-5 h-5" />

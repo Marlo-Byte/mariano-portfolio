@@ -32,6 +32,12 @@ export default defineConfig({
               ),
             S.divider(),
             orderableDocumentListDeskItem({
+              type: 'education',
+              title: 'Trayectoria Educativa (Arrastrar)',
+              S,
+              context,
+            }),
+            orderableDocumentListDeskItem({
               type: 'project',
               title: 'Proyectos (Arrastrar para ordenar)',
               S,

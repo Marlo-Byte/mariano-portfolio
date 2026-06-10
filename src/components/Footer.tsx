@@ -78,7 +78,7 @@ export function Footer({ profile }: FooterProps) {
   }
 
   return (
-    <footer className="relative border-t border-slate-200/60 dark:border-slate-800/60 py-16 px-4 sm:px-6 lg:px-8 bg-slate-50/30 dark:bg-slate-950/20 backdrop-blur-sm overflow-hidden">
+    <footer className="relative border-t border-slate-200/60 dark:border-slate-800/60 py-16 px-4 sm:px-6 lg:px-8 bg-slate-100/70 dark:bg-transparent backdrop-blur-sm overflow-hidden">
       
       {/* Aesthetic glowing background elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] md:w-[600px] h-[150px] rounded-full bg-primary/5 dark:bg-primary/2 blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
@@ -117,7 +117,7 @@ export function Footer({ profile }: FooterProps) {
                   href={profile.githubUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-xl glass-effect text-slate-650 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
+                  className="p-2.5 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
                   aria-label="GitHub"
                 >
                   <GithubIcon className="w-4 h-4" />
@@ -128,7 +128,7 @@ export function Footer({ profile }: FooterProps) {
                   href={profile.linkedinUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-xl glass-effect text-slate-650 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
+                  className="p-2.5 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
                   aria-label="LinkedIn"
                 >
                   <LinkedinIcon className="w-4 h-4" />
@@ -137,7 +137,7 @@ export function Footer({ profile }: FooterProps) {
               {profile.email && (
                 <a
                   href={`mailto:${profile.email}`}
-                  className="p-2.5 rounded-xl glass-effect text-slate-650 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
+                  className="p-2.5 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-white border border-slate-200/50 dark:border-slate-800/40 hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-200 hover:-translate-y-0.5"
                   aria-label="Email"
                 >
                   <Mail size={16} />
@@ -153,6 +153,7 @@ export function Footer({ profile }: FooterProps) {
               {[
                 { label: 'Inicio', href: '#home' },
                 { label: 'Sobre Mí', href: '#about' },
+                { label: 'Educación', href: '#education' },
                 { label: 'Proyectos', href: '#projects' },
                 { label: 'Habilidades', href: '#skills' },
                 { label: 'Contacto', href: '#contact' },
@@ -188,7 +189,7 @@ export function Footer({ profile }: FooterProps) {
               </a>
               
               {profile.location && (
-                <div className="flex items-center gap-2 text-xs text-slate-450 dark:text-slate-500">
+                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-500">
                   <MapPin size={13} className="text-slate-400 dark:text-slate-600" />
                   <span>{profile.location}</span>
                 </div>

@@ -14,8 +14,8 @@
   --primary: #6366f1; /* Indigo */
   --primary-hover: #4f46e5;
   --accent: #06b6d4; /* Cyan */
-  --card-bg: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(148, 163, 184, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(148, 163, 184, 0.18);
 }
 
 .dark {
@@ -64,7 +64,11 @@ body {
 
 /* Glow Effect */
 .neon-glow {
-  box-shadow: 0 0 25px -5px var(--primary), 0 0 15px -8px var(--accent);
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.25), 0 8px 15px -8px rgba(6, 182, 212, 0.2);
+}
+
+.dark .neon-glow {
+  box-shadow: 0 0 25px -5px rgba(129, 140, 248, 0.35), 0 0 15px -8px rgba(34, 211, 238, 0.25);
 }
 
 /* Glassmorphism utility */
@@ -73,6 +77,11 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
+  box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.08), 0 2px 8px -1px rgba(148, 163, 184, 0.04);
+}
+
+.dark .glass-effect {
+  box-shadow: 0 4px 30px -4px rgba(0, 0, 0, 0.3), 0 2px 12px -2px rgba(0, 0, 0, 0.15);
 }
 
 /* Devicon color overrides for Dark Mode */
