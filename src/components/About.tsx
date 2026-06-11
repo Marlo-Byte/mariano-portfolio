@@ -5,6 +5,7 @@ import { Download, Sparkles, TrendingUp } from 'lucide-react'
 import { ProfileType } from '@/sanity/mockData'
 import { getFileUrl } from '@/sanity/client'
 import { IconRenderer } from './IconRenderer'
+import { GlowCard } from './ui/GlowCard'
 
 interface AboutProps {
   profile: ProfileType
@@ -86,9 +87,10 @@ export function About({ profile }: AboutProps) {
         >
           
           {/* Card 1: Main Biography & Description (Spans 8 columns) */}
-          <motion.div
+          <GlowCard
             variants={bentoCardVariants}
-            className="lg:col-span-8 glass-effect rounded-[2rem] p-8 border flex flex-col justify-between relative overflow-hidden"
+            className="lg:col-span-8"
+            contentClassName="p-8 justify-between relative"
           >
             {/* Subtle background texture grid */}
             <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] dark:opacity-[0.03] -z-10" />
@@ -123,12 +125,13 @@ export function About({ profile }: AboutProps) {
                 </a>
               </div>
             )}
-          </motion.div>
+          </GlowCard>
 
           {/* Card 2: Quick Metrics Dashboard (Spans 4 columns) */}
-          <motion.div
+          <GlowCard
             variants={bentoCardVariants}
-            className="lg:col-span-4 glass-effect rounded-[2rem] p-8 border flex flex-col justify-between relative overflow-hidden"
+            className="lg:col-span-4"
+            contentClassName="p-8 justify-between relative"
           >
             {/* Ambient light inside card */}
             <div className="absolute -top-12 -right-12 w-28 h-28 rounded-full bg-primary/10 dark:bg-primary/5 blur-2xl" />
@@ -178,17 +181,10 @@ export function About({ profile }: AboutProps) {
             <div className="text-[10px] font-medium text-slate-400 dark:text-slate-500 italic mt-2 text-center lg:text-left">
               * Datos basados en proyectos de producción y desarrollo continuo.
             </div>
-          </motion.div>
+          </GlowCard>
 
           {/* Cards 3, 4, 5: Highlights / Core Values (Each spans 4 columns) */}
           {highlights.map((item, idx) => {
-            const glowColors = [
-              'group-hover:border-primary/30 group-hover:shadow-primary/5',
-              'group-hover:border-accent/30 group-hover:shadow-accent/5',
-              'group-hover:border-yellow-500/30 group-hover:shadow-yellow-500/5',
-            ]
-            const glowClass = glowColors[idx % glowColors.length]
-
             const iconColors = [
               'text-primary bg-primary/10',
               'text-accent bg-accent/10',
@@ -197,11 +193,12 @@ export function About({ profile }: AboutProps) {
             const iconClass = iconColors[idx % iconColors.length]
 
             return (
-              <motion.div
+              <GlowCard
                 key={idx}
                 variants={bentoCardVariants}
                 whileHover={{ y: -5 }}
-                className={`lg:col-span-4 glass-effect rounded-[2rem] p-7 border flex flex-col space-y-4 group transition-all duration-200 hover:shadow-xl ${glowClass}`}
+                className="lg:col-span-4 group"
+                contentClassName="p-7 space-y-4"
               >
                 {/* Icon Capsule */}
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:rotate-6 ${iconClass}`}>
@@ -216,7 +213,7 @@ export function About({ profile }: AboutProps) {
                     {item.description}
                   </p>
                 </div>
-              </motion.div>
+              </GlowCard>
             )
           })}
 

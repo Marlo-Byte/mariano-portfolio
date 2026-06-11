@@ -5,6 +5,7 @@ import { ExternalLink, Terminal } from 'lucide-react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/client'
 import { ProjectType } from '@/sanity/mockData'
+import { GlowCard } from './ui/GlowCard'
 
 interface ProjectsProps {
   projects: ProjectType[]
@@ -88,11 +89,12 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
             const finalImageUrl = imgUrl || project.imageUrlFallback || '/favicon.ico'
 
             return (
-              <motion.article
+              <GlowCard
                 key={project._id}
                 variants={cardVariants}
                 whileHover={{ y: -6 }}
-                className="group relative flex flex-col h-full rounded-[2rem] glass-effect border overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-primary/20 dark:hover:border-primary/30"
+                className="group flex flex-col h-full"
+                contentClassName="relative overflow-hidden"
               >
                 
                 {/* Image block with overlay badge & effects */}
@@ -172,7 +174,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
                   </div>
                 </div>
 
-              </motion.article>
+              </GlowCard>
             )
           })}
         </motion.div>

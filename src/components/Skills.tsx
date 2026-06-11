@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { SkillType, SkillCategoryType } from '@/sanity/mockData'
 import { IconRenderer } from './IconRenderer'
+import { GlowCard } from './ui/GlowCard'
 
 interface SkillsProps {
   skills: SkillType[]
@@ -103,10 +104,11 @@ export function Skills({ skills, categories }: SkillsProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {skillGroups.map((group, groupIdx) => (
-            <motion.div
+            <GlowCard
               key={groupIdx}
               variants={groupVariants}
-              className={`lg:col-span-1 glass-effect rounded-[2rem] p-6 sm:p-7 border flex flex-col h-full group transition-all duration-300 hover:shadow-2xl ${group.glow}`}
+              className="lg:col-span-1 group"
+              contentClassName="p-6 sm:p-7"
             >
               
               {/* Category Header with dynamic count badge */}
@@ -152,7 +154,7 @@ export function Skills({ skills, categories }: SkillsProps) {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </GlowCard>
           ))}
         </motion.div>
       </div>
