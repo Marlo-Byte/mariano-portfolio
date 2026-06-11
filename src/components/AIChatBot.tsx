@@ -2,15 +2,204 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, Bot, Sparkles, AlertCircle } from 'lucide-react'
-import { ProfileType } from '@/sanity/mockData'
+import { X, Send, Bot, Sparkles, AlertCircle, FileText } from 'lucide-react'
+import { ProfileType, ProjectType } from '@/sanity/mockData'
+import { getFileUrl } from '@/sanity/client'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
 }
 
-export function AIChatBot({ profile }: { profile: ProfileType }) {
+// Contact Card component
+function ContactCard({ email, linkedin, github }: { email: string; linkedin?: string; github?: string }) {
+  const [copied, setCopied] = useState(false)
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(email)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="my-2.5 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 shadow-sm space-y-3 w-full text-left">
+      <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200">
+        <div className="w-7.5 h-7.5 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+          <Send size={13} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Email de Mariano</span>
+          <span className="text-xs font-semibold block truncate select-all">{email}</span>
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleCopy}
+          className="flex-1 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-200 transition-all duration-150 active:scale-95 cursor-pointer"
+        >
+          {copied ? '¡Copiado! ✓' : 'Copiar correo'}
+        </button>
+        <a
+          href={`mailto:${email}`}
+          className="flex-1 py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-[10px] font-bold text-center transition-all duration-150 active:scale-95 cursor-pointer flex items-center justify-center"
+        >
+          Escribir email
+        </a>
+      </div>
+
+      {(linkedin || github) && (
+        <div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-800/40">
+          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Enlaces</span>
+          <div className="flex gap-1.5">
+            {github && (
+              <a
+                href={github}
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-lg bg-slate-200/40 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors duration-150 cursor-pointer"
+                title="GitHub"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                  <path d="M9 18c-4.51 2-5-2-7-2" />
+                </svg>
+              </a>
+            )}
+            {linkedin && (
+              <a
+                href={linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="w-7 h-7 rounded-lg bg-slate-200/40 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors duration-150 cursor-pointer"
+                title="LinkedIn"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                  <rect width="4" height="12" x="2" y="9" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// CV Download Card component
+function CVCard({ resumeUrl }: { resumeUrl: string }) {
+  return (
+    <div className="my-2.5 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 shadow-sm flex items-center justify-between gap-3 w-full text-left">
+      <div className="flex items-center gap-2.5 min-w-0">
+        <div className="w-8.5 h-8.5 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0">
+          <FileText size={16} />
+        </div>
+        <div className="min-w-0">
+          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Currículum Vitae</span>
+          <span className="text-xs font-semibold block truncate text-slate-800 dark:text-slate-200">CV_Mariano_Lopez.pdf</span>
+        </div>
+      </div>
+      <a
+        href={resumeUrl}
+        download="CV_Mariano_Lopez.pdf"
+        target="_blank"
+        rel="noreferrer"
+        className="py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-[10px] font-bold transition-all duration-150 active:scale-95 cursor-pointer whitespace-nowrap"
+      >
+        Descargar
+      </a>
+    </div>
+  )
+}
+
+// Projects list Card component
+function ProjectsCard({ projects }: { projects: ProjectType[] }) {
+  return (
+    <div className="my-2.5 space-y-2 w-full text-left">
+      {projects.slice(0, 2).map((p) => (
+        <div 
+          key={p._id} 
+          className="p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 shadow-sm flex flex-col gap-2"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="text-[11px] font-extrabold text-slate-800 dark:text-slate-100 truncate">{p.title}</h4>
+            <span className="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[7px] font-extrabold uppercase tracking-wider whitespace-nowrap">
+              Proyecto
+            </span>
+          </div>
+          
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal line-clamp-2">
+            {p.description}
+          </p>
+
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {p.tags.slice(0, 3).map((t) => (
+              <span key={t} className="px-1.5 py-0.5 rounded bg-slate-200/50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[8px] font-bold">
+                {t}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex gap-2 pt-2 border-t border-slate-200/30 dark:border-slate-800/20 mt-1">
+            {p.codeUrl && (
+              <a
+                href={p.codeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-1 px-2 rounded-md bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/60 dark:border-slate-700 text-[9px] font-bold text-slate-600 dark:text-slate-200 text-center transition-colors cursor-pointer"
+              >
+                Código
+              </a>
+            )}
+            {p.demoUrl && (
+              <a
+                href={p.demoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-1 px-2 rounded-md bg-primary hover:bg-primary-hover text-white text-[9px] font-bold text-center transition-colors cursor-pointer"
+              >
+                Ver Demo
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Stats Card component
+function StatsCard({ stats }: { stats?: Array<{ label: string; value: string }> }) {
+  const displayStats = stats && stats.length > 0 ? stats : [
+    { label: 'Años de Experiencia', value: '3+' },
+    { label: 'Proyectos Completados', value: '15+' },
+    { label: 'Tecnologías Dominadas', value: '12+' },
+  ]
+
+  return (
+    <div className="my-2.5 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 shadow-sm space-y-2.5 w-full text-left">
+      <h4 className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Logros Clave</h4>
+      
+      <div className="space-y-2.5">
+        {displayStats.map((s, i) => (
+          <div key={i} className="space-y-1">
+            <div className="flex justify-between text-[10px] font-bold text-slate-700 dark:text-slate-350">
+              <span className="truncate pr-2">{s.label}</span>
+              <span className="text-primary">{s.value}</span>
+            </div>
+            <div className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-primary to-accent rounded-full w-[80%]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function AIChatBot({ profile, projects }: { profile: ProfileType; projects: ProjectType[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>(() => [
     {
@@ -108,19 +297,174 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
     { text: '¿Cómo puedo contactarte?', label: 'Contacto' },
   ]
 
-  // Render markdown bold helper
-  const renderMessageContent = (text: string) => {
-    // Simple bold regex replacements to simulate markdown bold (**text**)
-    const parts = text.split(/(\*\*[^*]+\*\*)/)
-    return parts.map((part, index) => {
+  // Parse inline element strings (bold, emails, URLs)
+  const parseInlineElements = (text: string): React.ReactNode[] => {
+    // Regex splits text into bold blocks, emails, HTTP(S) links, and regular text segments
+    const tokenRegex = /(\*\*[^*]+\*\*|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|https?:\/\/[^\s]+)/g
+    const parts = text.split(tokenRegex)
+    
+    return parts.map((part, idx) => {
+      const key = `inline-${idx}`
+      if (!part) return null
+
+      // Match markdown bold syntax: **text**
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={index} className="font-extrabold text-slate-900 dark:text-white">{part.slice(2, -2)}</strong>
+        const innerText = part.slice(2, -2)
+        return (
+          <strong key={key} className="font-black text-slate-900 dark:text-white">
+            {parseInlineElements(innerText)}
+          </strong>
+        )
       }
-      // Handle simple bullet lines
-      if (part.startsWith('• ') || part.startsWith(' - ')) {
-        return <span key={index} className="block pl-2 py-0.5">{part}</span>
+
+      // Match email addresses
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(part)) {
+        return (
+          <a
+            key={key}
+            href={`mailto:${part}`}
+            className="text-primary hover:text-primary-hover dark:text-blue-400 dark:hover:text-blue-300 underline decoration-primary/40 dark:decoration-blue-400/40 underline-offset-2 font-semibold transition-colors duration-150 cursor-pointer select-all break-all"
+          >
+            {part}
+          </a>
+        )
       }
+
+      // Match HTTP/HTTPS links
+      if (/^https?:\/\//.test(part)) {
+        let cleanUrl = part
+        let trailingPunctuation = ''
+        const trailingMatch = part.match(/([.,;:!?)\]}]+)$/)
+        if (trailingMatch) {
+          trailingPunctuation = trailingMatch[1]
+          cleanUrl = part.slice(0, -trailingPunctuation.length)
+        }
+
+        return (
+          <span key={key}>
+            <a
+              href={cleanUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary hover:text-primary-hover dark:text-blue-400 dark:hover:text-blue-300 underline decoration-primary/40 dark:decoration-blue-400/40 underline-offset-2 font-semibold transition-colors duration-150 cursor-pointer break-all"
+            >
+              {cleanUrl}
+            </a>
+            {trailingPunctuation}
+          </span>
+        )
+      }
+
+      // Plain text segments
       return part
+    })
+  }
+
+  // Render markdown bold helper & Rich visual cards
+  const renderMessageContent = (text: string) => {
+    // Split text by custom [CARD:...] or [TAG:...] tags (case-insensitive, allows space)
+    const parts = text.split(/(\[(?:CARD|TAG)\s*:\s*(?:CONTACT|PROJECTS|CV|STATS)\])/gi)
+
+    return parts.map((part, index) => {
+      const match = part.match(/^\[(?:CARD|TAG)\s*:\s*(CONTACT|PROJECTS|CV|STATS)\]$/i)
+      
+      if (match) {
+        const cardType = match[1].toUpperCase() // e.g. "CONTACT", "PROJECTS", "CV", "STATS"
+        
+        if (cardType === 'CONTACT') {
+          return (
+            <ContactCard 
+              key={index} 
+              email={profile.email} 
+              linkedin={profile.linkedinUrl} 
+              github={profile.githubUrl} 
+            />
+          )
+        }
+        if (cardType === 'CV') {
+          const cvUrl = getFileUrl(profile.resume) || profile.resumeUrlFallback || '#'
+          return <CVCard key={index} resumeUrl={cvUrl} />
+        }
+        if (cardType === 'PROJECTS') {
+          return <ProjectsCard key={index} projects={projects || []} />
+        }
+        if (cardType === 'STATS') {
+          return <StatsCard key={index} stats={profile.stats} />
+        }
+        
+        return null
+      }
+
+      // Split the text segment into lines to parse list items, headings, and paragraphs individually
+      const lines = part.split('\n')
+      return (
+        <div key={index} className="space-y-1.5 my-1">
+          {lines.map((line, lineIdx) => {
+            const trimmedLine = line.trim()
+            if (!trimmedLine && lineIdx > 0 && lineIdx < lines.length - 1) {
+              return <div key={lineIdx} className="h-2" />
+            }
+
+            // A: Check for Headers (starts with # or ends with : and is relatively short)
+            // Strip leading/trailing double asterisks (common in bold titles) to avoid syntax interference
+            const cleanLineCheck = trimmedLine.replace(/^\*\*|\*\*$/g, '').trim()
+            const isHeader = trimmedLine.startsWith('#') || 
+              (cleanLineCheck.endsWith(':') && cleanLineCheck.length < 60 && !cleanLineCheck.includes('http') && !cleanLineCheck.includes('@'))
+            
+            // B: Check for Bullet Points (starts with -, *, •)
+            const isBullet = trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ') || trimmedLine.startsWith('• ')
+            
+            // Clean prefix for rendering
+            let contentText = line
+            if (isBullet) {
+              if (trimmedLine.startsWith('- ')) contentText = line.replace(/^\s*-\s/, '')
+              else if (trimmedLine.startsWith('* ')) contentText = line.replace(/^\s*\*\s/, '')
+              else if (trimmedLine.startsWith('• ')) contentText = line.replace(/^\s*•\s/, '')
+            }
+
+            // Remove markdown header symbols if present
+            if (trimmedLine.startsWith('#')) {
+              contentText = contentText.replace(/^#+\s*/, '')
+            }
+
+            const parsedElements = parseInlineElements(contentText)
+
+            if (isHeader) {
+              const headerLevel = trimmedLine.startsWith('###') 
+                ? 'text-xs' 
+                : trimmedLine.startsWith('##') 
+                ? 'text-[13px]' 
+                : trimmedLine.startsWith('#') 
+                ? 'text-[14px]' 
+                : 'text-[12.5px]'
+              return (
+                <h4 
+                  key={lineIdx} 
+                  className={`font-black text-slate-900 dark:text-white mt-3.5 first:mt-1 mb-1 tracking-tight ${headerLevel}`}
+                >
+                  {parsedElements}
+                </h4>
+              )
+            }
+
+            if (isBullet) {
+              return (
+                <div key={lineIdx} className="flex items-start gap-2 pl-2 text-[12.5px] leading-relaxed text-slate-800 dark:text-slate-200">
+                  <span className="text-primary font-bold flex-shrink-0 mt-2 select-none text-[6px]">●</span>
+                  <span className="flex-1">{parsedElements}</span>
+                </div>
+              )
+            }
+
+            // Normal line
+            return (
+              <p key={lineIdx} className="text-[12.5px] leading-relaxed text-slate-800 dark:text-slate-200">
+                {parsedElements}
+              </p>
+            )
+          })}
+        </div>
+      )
     })
   }
 
@@ -180,7 +524,7 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
                       className={`px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed shadow-sm ${
                         msg.role === 'user'
                           ? 'bg-primary text-white rounded-tr-none'
-                          : 'bg-slate-100/80 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border border-slate-200/30 dark:border-slate-800/30 rounded-tl-none'
+                          : 'bg-slate-50/90 dark:bg-slate-900/65 text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-800/40 rounded-tl-none'
                       }`}
                       style={{ whiteSpace: 'pre-wrap' }}
                     >
@@ -197,7 +541,7 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
                     <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center text-primary flex-shrink-0">
                       <Bot size={13} />
                     </div>
-                    <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/30 dark:border-slate-800/30 flex items-center gap-1">
+                    <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-slate-50/90 dark:bg-slate-900/65 border border-slate-200/60 dark:border-slate-800/40 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '150ms' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -226,7 +570,7 @@ export function AIChatBot({ profile }: { profile: ProfileType }) {
                   <button
                     key={i}
                     onClick={() => handleSubmit(undefined, sug.text)}
-                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200/70 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200/50 dark:border-slate-800/50 text-[10px] font-bold text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary/40 dark:hover:border-primary/40 active:scale-95 transition-all duration-150 cursor-pointer"
+                    className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200/70 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200/50 dark:border-slate-800/50 text-[10px] font-bold text-slate-700 dark:text-slate-350 hover:text-primary dark:hover:text-white hover:border-primary/40 dark:hover:border-primary/40 active:scale-95 transition-all duration-150 cursor-pointer"
                   >
                     {sug.label}
                   </button>

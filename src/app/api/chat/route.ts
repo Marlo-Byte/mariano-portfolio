@@ -129,6 +129,12 @@ INSTRUCCIONES ADICIONALES:
 1. Responde preguntas del usuario basándote EN ESTE CONTEXTO de Mariano Lopez.
 2. Si te preguntan algo que NO está en el contexto o no está relacionado con Mariano, responde educadamente que tu función es ser el asistente virtual de Mariano y sólo puedes hablar de su perfil.
 3. Sé conciso y breve en tus respuestas (máximo 2 párrafos) para que se lea bien en un chat de pantalla chica.
+4. USO DE TARJETAS ENRIQUECIDAS (RICH CARDS):
+   Puedes inyectar elementos visuales interactivos en tus respuestas incluyendo exactamente los siguientes tags en tu texto cuando sea relevante (nunca inventes nuevos tags):
+   - Si el usuario pide formas de contacto, correo, redes sociales, enlaces, o cómo comunicarse, añade al final de tu respuesta: [CARD:CONTACT]
+   - Si el usuario pide ver proyectos, aplicaciones que ha hecho, trabajos o portfolio, añade al final de tu respuesta: [CARD:PROJECTS]
+   - Si el usuario pide descargar su currículum, CV, hoja de vida o resume, añade al final de tu respuesta: [CARD:CV]
+   - Si el usuario pregunta por estadísticas, números clave o logros cuantitativos de Mariano, añade al final de tu respuesta: [CARD:STATS]
 `
 
     const lastUserMessage = messages[messages.length - 1].content
@@ -141,18 +147,13 @@ INSTRUCCIONES ADICIONALES:
       let reply = ''
 
       if (query.includes('proyecto') || query.includes('trabajo') || query.includes('portafolio') || query.includes('hiciste')) {
-        reply = `Mariano ha construido varios proyectos destacados. Algunos de ellos son:\n\n` + 
-          projects.slice(0, 3).map(p => `• **${p.title}**: ${p.description}`).join('\n') + 
-          `\n\n¿Te gustaría saber más detalles sobre alguno en particular?`
+        reply = `Mariano ha desarrollado proyectos web interactivos que demuestran su habilidad para resolver problemas. Aquí tienes una vista previa de sus proyectos principales:\n\n[CARD:PROJECTS]`
       } else if (query.includes('contacto') || query.includes('email') || query.includes('correo') || query.includes('escribir') || query.includes('llamar')) {
-        reply = `Puedes ponerte en contacto directo con Mariano escribiéndole a su correo electrónico: **${profile.email}**, o a través del formulario al final de la página. Su ubicación actual es ${profile.location || 'Buenos Aires, Argentina'}.`
-      } else if (query.includes('habilidad') || query.includes('tecnologia') || query.includes('sabe') || query.includes('lenguaje') || query.includes('stack')) {
-        reply = `Mariano domina las siguientes tecnologías principales:\n\n` + 
-          skills.slice(0, 7).map(s => `• ${s.name}`).join('\n') + 
-          `\n\nEstá especializado principalmente en el desarrollo Frontend con React, Next.js y TypeScript.`
-      } else if (query.includes('estudio') || query.includes('educacion') || query.includes('universidad') || query.includes('titulo')) {
-        reply = `La formación de Mariano incluye:\n\n` + 
-          education.map(e => `• **${e.degree}** - ${e.institution} (${e.startDate} - ${e.endDate})`).join('\n')
+        reply = `¡Claro! Te comparto la tarjeta de contacto interactiva de Mariano para comunicarte con él rápidamente:\n\n[CARD:CONTACT]`
+      } else if (query.includes('habilidad') || query.includes('tecnologia') || query.includes('sabe') || query.includes('lenguaje') || query.includes('stack') || query.includes('experiencia') || query.includes('año') || query.includes('numero') || query.includes('número')) {
+        reply = `Mariano cuenta con una sólida experiencia en desarrollo de software. Aquí puedes ver un resumen de sus métricas y logros clave:\n\n[CARD:STATS]`
+      } else if (query.includes('estudio') || query.includes('educacion') || query.includes('universidad') || query.includes('titulo') || query.includes('cv') || query.includes('resume') || query.includes('curriculum') || query.includes('currículum')) {
+        reply = `Puedes descargar el Currículum Vitae completo de Mariano en formato PDF directamente con la siguiente tarjeta de descarga:\n\n[CARD:CV]`
       } else if (query.includes('hora') || query.includes('dia') || query.includes('día') || query.includes('fecha') || query.includes('hoy') || query.includes('tiempo')) {
         reply = `Hoy es **${localDateTime}** (calculado en base a la zona horaria **${profile.timezone || 'UTC-3'}** configurada en el CMS).`
       } else {

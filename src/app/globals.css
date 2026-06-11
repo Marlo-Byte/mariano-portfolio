@@ -95,12 +95,6 @@ body {
   color: #ffffff !important;
 }
 
-/* Hide native cursor on devices with mouse/fine pointer capabilities */
-@media (pointer: fine) {
-  body, a, button, input, textarea, select, [role="button"], .cursor-pointer {
-    cursor: none !important;
-  }
-}
 
 
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 interface Particle {
   id: number
@@ -21,26 +21,13 @@ interface Ripple {
 }
 
 export function CustomCursor() {
-  const [isHovering, setIsHovering] = useState(false)
-  const [isClicked, setIsClicked] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
   const [particles, setParticles] = useState<Particle[]>([])
   const [ripples, setRipples] = useState<Ripple[]>([])
+  const [isMobile, setIsMobile] = useState(true)
 
-  const cursorX = useMotionValue(-100)
-  const cursorY = useMotionValue(-100)
-
-  // Spring configuration for trailing physical lag
-  const springConfig = { damping: 28, stiffness: 280, mass: 0.4 }
-  const cursorXSpring = useSpring(cursorX, springConfig)
-  const cursorYSpring = useSpring(cursorY, springConfig)
-
-  // 1. Mobile/Touch Device detection (pointer: fine capability check)
+  // Mobile/Touch Device detection (pointer: fine capability check)
   useEffect(() => {
     const mediaQuery = window.matchMedia('(pointer: fine)')
-    
-    // Defer the set state to avoid synchronous rendering in effect execution
     const checkMedia = () => {
       setIsMobile(!mediaQuery.matches)
     }
@@ -57,45 +44,10 @@ export function CustomCursor() {
     }
   }, [])
 
-  // 2. Cursor Event Listeners (only setup on desktop devices)
   useEffect(() => {
     if (isMobile) return
 
-    // Cursor Coordinates Tracking
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
-      if (!isVisible) setIsVisible(true)
-    }
-
-    const handleMouseLeave = () => setIsVisible(false)
-    const handleMouseEnter = () => setIsVisible(true)
-
-    // Hover Target Detections (Global Event Delegation)
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
-      
-      const isInteractive = target.closest('a, button, input, textarea, [role="button"], .cursor-pointer, select, [type="submit"], iframe')
-      if (isInteractive) {
-        setIsHovering(true)
-      }
-    }
-
-    const handleMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
-      
-      const isInteractive = target.closest('a, button, input, textarea, [role="button"], .cursor-pointer, select, [type="submit"], iframe')
-      if (isInteractive) {
-        setIsHovering(false)
-      }
-    }
-
-    // Click State, Ripple & Particle Spawner
     const handleMouseDown = (e: MouseEvent) => {
-      setIsClicked(true)
-
       const colors = [
         'var(--primary)',
         'var(--accent)',
@@ -138,59 +90,14 @@ export function CustomCursor() {
 
       setParticles((prev) => [...prev, ...newParticles].slice(-60))
     }
-    const handleMouseUp = () => setIsClicked(false)
 
-    window.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', handleMouseLeave)
-    document.addEventListener('mouseenter', handleMouseEnter)
-    window.addEventListener('mouseover', handleMouseOver)
-    window.addEventListener('mouseout', handleMouseOut)
     window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
-
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseleave', handleMouseLeave)
-      document.removeEventListener('mouseenter', handleMouseEnter)
-      window.removeEventListener('mouseover', handleMouseOver)
-      window.removeEventListener('mouseout', handleMouseOut)
       window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isMobile, isVisible, cursorX, cursorY])
+  }, [isMobile])
 
-  // Do not render anything if the client is mobile/touch-screen
   if (isMobile) return null
-
-  // Spring animation variants for the outer glow ring
-  const ringVariants = {
-    default: {
-      width: 28,
-      height: 28,
-      backgroundColor: 'rgba(99, 102, 241, 0)',
-      borderColor: 'var(--primary)',
-      borderWidth: 1.5,
-    },
-    hover: {
-      width: 50,
-      height: 50,
-      backgroundColor: 'color-mix(in srgb, var(--accent) 15%, transparent)',
-      borderColor: 'var(--accent)',
-      borderWidth: 2,
-    }
-  }
-
-  // Animation variants for the inner dot
-  const dotVariants = {
-    default: {
-      scale: 1,
-      backgroundColor: 'var(--primary)',
-    },
-    hover: {
-      scale: 1.3,
-      backgroundColor: 'var(--accent)',
-    }
-  }
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
@@ -259,44 +166,6 @@ export function CustomCursor() {
           }}
         />
       ))}
-      {/* Outer Spring Glow Ring */}
-      <motion.div
-        variants={ringVariants}
-        animate={isClicked ? { scale: 0.82, width: 44, height: 44, borderColor: 'var(--accent)', borderWidth: 2.5 } : isHovering ? 'hover' : 'default'}
-        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-        className="fixed top-0 left-0 rounded-full pointer-events-none flex items-center justify-center shadow-sm z-[9998]"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-          opacity: isVisible ? 0.85 : 0,
-        }}
-      >
-        {/* Subtle center crosshair indicator on hover */}
-        {isHovering && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 0.35, scale: 1 }}
-            className="w-1.5 h-1.5 rounded-full bg-accent"
-          />
-        )}
-      </motion.div>
-
-      {/* Inner Precision Dot */}
-      <motion.div
-        variants={dotVariants}
-        animate={isClicked ? { scale: 0.7 } : isHovering ? 'hover' : 'default'}
-        transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none shadow-md shadow-primary/30 z-[9999]"
-        style={{
-          x: cursorX,
-          y: cursorY,
-          translateX: '-50%',
-          translateY: '-50%',
-          opacity: isVisible ? 1 : 0,
-        }}
-      />
     </div>
   )
 }

@@ -81,7 +81,7 @@ export default async function Home() {
         <Contact profile={profile} />
       </main>
       <Footer profile={profile} />
-      {profile.aiEnabled !== false && <AIChatBot profile={profile} />}
+      {profile.aiEnabled !== false && <AIChatBot profile={profile} projects={projects} />}
     </div>
   )
 }
