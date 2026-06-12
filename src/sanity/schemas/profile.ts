@@ -89,6 +89,22 @@ export const profile = defineType({
       initialValue: 'Disponible para nuevos proyectos • ¡Hablemos! 🚀',
       group: 'hero',
     }),
+    defineField({
+      name: 'discoverMoreEnabled',
+      title: 'Mostrar Indicador "Descubrir Más"',
+      description: 'Habilita o deshabilita el indicador/botón de scroll al final del Hero.',
+      type: 'boolean',
+      initialValue: true,
+      group: 'hero',
+    }),
+    defineField({
+      name: 'discoverMoreText',
+      title: 'Texto de "Descubrir Más"',
+      description: 'Texto que se muestra al lado del simulador de mouse. Ejemplo: Descubrir más',
+      type: 'string',
+      initialValue: 'Descubrir más',
+      group: 'hero',
+    }),
 
     // --- Grupo: Sobre Mí ---
     defineField({

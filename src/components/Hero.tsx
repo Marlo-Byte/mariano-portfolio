@@ -177,7 +177,8 @@ export function Hero({ profile }: HeroProps) {
                 href="#contact"
                 whileHover={{ y: -2, scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 dark:border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-500/50 dark:hover:border-emerald-500/60 uppercase select-none transition-all duration-300 cursor-pointer"
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 dark:border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-500/50 dark:hover:border-emerald-500/60 uppercase select-none transition-colors duration-300 cursor-pointer"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
@@ -354,25 +355,40 @@ export function Hero({ profile }: HeroProps) {
           </div>
 
           {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
-          >
-            <a
-              href="#about"
-              className="flex flex-col items-center gap-2 text-xs font-medium text-slate-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+          {profile.discoverMoreEnabled !== false && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.8, duration: 0.8 }}
+              className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-20"
             >
-              <span>Descubrir más</span>
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
+              <style>{`
+                @keyframes scroll-dot {
+                  0% { opacity: 0; transform: translateY(0); }
+                  20% { opacity: 1; }
+                  80% { opacity: 0; transform: translateY(10px); }
+                  100% { opacity: 0; transform: translateY(0); }
+                }
+                .animate-scroll-dot {
+                  animation: scroll-dot 1.8s cubic-bezier(0.15, 0.41, 0.69, 0.94) infinite;
+                }
+              `}</style>
+              <motion.a
+                href="#about"
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className="flex items-center gap-2 md:gap-3 px-3.5 py-1.5 md:px-5 md:py-2.5 rounded-full border border-slate-200/50 dark:border-slate-800/40 bg-white/40 dark:bg-slate-950/20 backdrop-blur-md hover:border-primary/40 dark:hover:border-primary/30 hover:bg-white/80 dark:hover:bg-slate-900/35 hover:shadow-[0_0_20px_rgba(99,102,241,0.12)] text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-semibold tracking-wide text-[10px] md:text-xs select-none transition-colors duration-300 cursor-pointer"
               >
-                <ArrowDown size={16} />
-              </motion.div>
-            </a>
-          </motion.div>
+                {/* Mouse simulator */}
+                <div className="w-4 h-6 md:w-5 md:h-8 rounded-full border border-slate-300 dark:border-slate-700 md:border-2 flex justify-center pt-1 md:pt-1.5 relative overflow-hidden">
+                  <span className="w-0.5 h-1.5 md:w-1 md:h-2 rounded-full bg-primary animate-scroll-dot" />
+                </div>
+                <span>{profile.discoverMoreText || 'Descubrir más'}</span>
+                <ArrowDown size={12} className="animate-bounce text-primary md:w-3.5 md:h-3.5" />
+              </motion.a>
+            </motion.div>
+          )}
 
         </div>
       </BackgroundBeamsWithCollision>

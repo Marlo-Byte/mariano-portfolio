@@ -25,6 +25,8 @@ export interface ProfileType {
   aiPrompt?: string
   typewriterWords?: string[]
   availabilityStatus?: string
+  discoverMoreEnabled?: boolean
+  discoverMoreText?: string
 }
 
 export interface ProjectType {
@@ -167,7 +169,9 @@ export const mockProfile: ProfileType = {
     'Creador de Experiencias Web Premium',
     'Apasionado por la Optimización y UX'
   ],
-  availabilityStatus: 'Disponible para nuevos proyectos • ¡Hablemos! 🚀'
+  availabilityStatus: 'Disponible para nuevos proyectos • ¡Hablemos! 🚀',
+  discoverMoreEnabled: true,
+  discoverMoreText: 'Descubrir más'
 }
 
 export const mockEducation: EducationType[] = [
