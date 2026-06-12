@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { GraduationCap, Calendar, BookOpen, Award, ExternalLink } from 'lucide-react'
 import { EducationType } from '@/sanity/mockData'
 import { getFileUrl } from '@/sanity/client'
+import { TiltCard } from './ui/TiltCard'
 
 interface EducationProps {
   education: EducationType[]
@@ -113,10 +114,7 @@ export function Education({ education }: EducationProps) {
                     variants={isEven ? cardLeftVariants : cardRightVariants}
                     className="w-full md:w-1/2 pl-12 md:pl-0 md:px-8 lg:px-12 flex"
                   >
-                    <div className="glass-effect w-full rounded-[2rem] p-6 sm:p-7 border border-slate-200/50 dark:border-slate-800/50 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 group flex flex-col justify-between relative overflow-hidden">
-                      {/* Gradient card glowing corner */}
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
-
+                    <TiltCard className="w-full p-6 sm:p-7 group">
                       <div className="flex flex-col h-full justify-between">
                         <div>
                           {/* Timeline Badge */}
@@ -163,7 +161,7 @@ export function Education({ education }: EducationProps) {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </TiltCard>
                   </motion.div>
 
                 </div>

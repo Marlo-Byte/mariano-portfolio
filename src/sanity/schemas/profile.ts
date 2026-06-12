@@ -4,18 +4,20 @@ export const profile = defineType({
   name: 'profile',
   title: 'Perfil de Usuario',
   type: 'document',
+  groups: [
+    { name: 'general', title: 'Información General', default: true },
+    { name: 'hero', title: 'Sección Hero' },
+    { name: 'about', title: 'Sección Sobre Mí' },
+    { name: 'contact', title: 'Contacto y Redes' },
+    { name: 'chatbot', title: 'Asistente de IA' },
+  ],
   fields: [
+    // --- Grupo: General ---
     defineField({
       name: 'name',
       title: 'Nombre Completo',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'role',
-      title: 'Rol Profesional',
-      type: 'string',
-      description: 'Ejemplo: Desarrollador Frontend Full-Stack',
+      group: 'general',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -24,6 +26,7 @@ export const profile = defineType({
       type: 'string',
       description: 'Nombre o título principal que se muestra en el logo del encabezado. Si se deja vacío, se mostrará tu Nombre Completo.',
       initialValue: 'Mariano',
+      group: 'general',
     }),
     defineField({
       name: 'logoCharacter',
@@ -31,6 +34,7 @@ export const profile = defineType({
       type: 'string',
       description: 'Letra o inicial que se muestra dentro del logo (Header y Footer). Ejemplo: M. Si se deja vacío, se usará la primera letra de tu Nombre.',
       initialValue: 'M',
+      group: 'general',
       validation: (Rule) => Rule.max(3),
     }),
     defineField({
@@ -39,6 +43,17 @@ export const profile = defineType({
       type: 'string',
       description: 'Subtítulo que se muestra debajo de tu nombre en el encabezado. Ejemplo: dev.studio',
       initialValue: 'dev.studio',
+      group: 'general',
+    }),
+
+    // --- Grupo: Hero ---
+    defineField({
+      name: 'role',
+      title: 'Rol Profesional',
+      type: 'string',
+      description: 'Ejemplo: Desarrollador Frontend Full-Stack',
+      group: 'hero',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'avatar',
@@ -47,6 +62,7 @@ export const profile = defineType({
       options: {
         hotspot: true,
       },
+      group: 'hero',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -54,13 +70,33 @@ export const profile = defineType({
       title: 'Biografía Corta (Hero)',
       description: 'Se muestra en la sección de inicio debajo de tu nombre.',
       type: 'text',
+      group: 'hero',
       validation: (Rule) => Rule.required().max(300),
     }),
+    defineField({
+      name: 'typewriterWords',
+      title: 'Frases del Subtítulo (Typewriter)',
+      description: 'Carga frases cortas para el efecto de máquina de escribir en el Hero. Si se deja vacío, se mostrarán las frases predeterminadas.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      group: 'hero',
+    }),
+    defineField({
+      name: 'availabilityStatus',
+      title: 'Texto de Disponibilidad (Hero Badge)',
+      description: 'Texto descriptivo para la insignia de disponibilidad. Ejemplo: Disponible para nuevos proyectos • ¡Hablemos! 🚀',
+      type: 'string',
+      initialValue: 'Disponible para nuevos proyectos • ¡Hablemos! 🚀',
+      group: 'hero',
+    }),
+
+    // --- Grupo: Sobre Mí ---
     defineField({
       name: 'aboutTitle',
       title: 'Título de la Sección Sobre Mí',
       description: 'Ejemplo: Desarrollador enfocado en resolver problemas complejos...',
       type: 'string',
+      group: 'about',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -68,6 +104,7 @@ export const profile = defineType({
       title: 'Biografía Detallada (Sobre Mí)',
       description: 'Se muestra en la sección "Sobre Mí". Puedes usar saltos de línea.',
       type: 'text',
+      group: 'about',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -75,25 +112,8 @@ export const profile = defineType({
       title: 'Archivo de CV / Currículum',
       description: 'Sube tu CV en formato PDF',
       type: 'file',
+      group: 'about',
     }),
-    defineField({
-      name: 'githubUrl',
-      title: 'Enlace de GitHub',
-      type: 'url',
-    }),
-    defineField({
-      name: 'linkedinUrl',
-      title: 'Enlace de LinkedIn',
-      type: 'url',
-    }),
-    defineField({
-      name: 'email',
-      title: 'Correo de Contacto',
-      type: 'string',
-      validation: (Rule) => Rule.required().email(),
-    }),
-    
-    // NEW: Stats Array (for About Section)
     defineField({
       name: 'stats',
       title: 'Estadísticas (Sección Sobre Mí)',
@@ -109,10 +129,9 @@ export const profile = defineType({
           ]
         }
       ],
+      group: 'about',
       validation: (Rule) => Rule.max(3),
     }),
-
-    // NEW: Highlights Array (for About Section)
     defineField({
       name: 'highlights',
       title: 'Destacados / Valores (Sección Sobre Mí)',
@@ -153,29 +172,53 @@ export const profile = defineType({
           ]
         }
       ],
+      group: 'about',
       validation: (Rule) => Rule.max(3),
     }),
 
-    // NEW: Location & Timezone (for Contact Section)
+    // --- Grupo: Contacto & Redes ---
+    defineField({
+      name: 'email',
+      title: 'Correo de Contacto',
+      type: 'string',
+      group: 'contact',
+      validation: (Rule) => Rule.required().email(),
+    }),
+    defineField({
+      name: 'githubUrl',
+      title: 'Enlace de GitHub',
+      type: 'url',
+      group: 'contact',
+    }),
+    defineField({
+      name: 'linkedinUrl',
+      title: 'Enlace de LinkedIn',
+      type: 'url',
+      group: 'contact',
+    }),
     defineField({
       name: 'location',
       title: 'Ubicación Física',
       description: 'Ejemplo: Buenos Aires, Argentina',
       type: 'string',
+      group: 'contact',
     }),
     defineField({
       name: 'timezone',
       title: 'Zona Horaria',
       description: 'Ejemplo: UTC-3 (Horario local)',
       type: 'string',
+      group: 'contact',
     }),
-    // CONFIGURACIÓN DE IA (Asistente Chatbot)
+
+    // --- Grupo: Asistente de IA ---
     defineField({
       name: 'aiEnabled',
       title: 'Activar Chatbot de IA',
       description: 'Habilita o deshabilita el chat de IA flotante en el sitio web.',
       type: 'boolean',
       initialValue: true,
+      group: 'chatbot',
     }),
     defineField({
       name: 'aiProvider',
@@ -189,12 +232,14 @@ export const profile = defineType({
         ],
       },
       initialValue: 'gemini',
+      group: 'chatbot',
     }),
     defineField({
       name: 'aiApiKey',
       title: 'API Key de la IA',
       description: 'Introduce la clave de API para el proveedor seleccionado. Se ejecuta de forma segura en el servidor y nunca se expone al cliente.',
       type: 'string',
+      group: 'chatbot',
     }),
     defineField({
       name: 'aiPrompt',
@@ -202,6 +247,7 @@ export const profile = defineType({
       description: 'Instrucciones de comportamiento para el asistente virtual de IA.',
       type: 'text',
       initialValue: 'Eres "ML-Assistant", el asistente virtual interactivo y agente de Inteligencia Artificial de Mariano Lopez. Tu único objetivo es guiar, informar y conversar de manera profesional con reclutadores, clientes y visitantes de su portafolio.\n\nREGLAS DE COMPORTAMIENTO:\n1. IDENTIDAD: Háblale al usuario presentándote como el asistente de Mariano. Refiérete a Mariano siempre en tercera persona (ej. "Mariano desarrolló...", "Él trabaja con...", "Puedes escribirle a...").\n2. TONO: Sé extremadamente profesional, servicial, amigable y entusiasta de la tecnología.\n3. BREVEDAD: Tus respuestas deben ser breves, estructuradas y fáciles de leer (máximo 2 párrafos cortos o listas de viñetas). Evita textos largos.\n4. CONTROL DE CONTEXTO: Responde ÚNICAMENTE utilizando los datos provistos en el contexto de Mariano (Proyectos, Habilidades, Estudios y Contacto). Si el usuario pregunta algo que no está especificado o te pide realizar tareas no relacionadas (como escribir código ajeno, resolver acertijos o hablar de temas fuera del portafolio), responde amablemente: "Como asistente virtual de Mariano Lopez, mi función es responder dudas sobre su perfil profesional, proyectos y experiencia. ¿Te gustaría saber más sobre sus proyectos o cómo contactarlo?".\n5. NO ALUCINES: Jamás inventes datos personales, enlaces de redes sociales, experiencias, tecnologías o proyectos. Si no se menciona en la información oficial, indica que no cuentas con ese dato.',
+      group: 'chatbot',
     }),
   ],
 })

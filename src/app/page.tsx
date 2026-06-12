@@ -1,6 +1,7 @@
 import { client } from '@/sanity/client'
 import { ProfileType, ProjectType, SkillType, SkillCategoryType, EducationType, mockProfile, mockProjects, mockSkills, mockSkillCategories, mockEducation } from '@/sanity/mockData'
 import { Navbar } from '@/components/Navbar'
+import { PageLoader } from '@/components/PageLoader'
 import { Hero } from '@/components/Hero'
 import { About } from '@/components/About'
 import { Education } from '@/components/Education'
@@ -71,6 +72,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <PageLoader logoCharacter={profile.logoCharacter || profile.name.charAt(0)} />
       <Navbar profile={profile} />
       <main className="flex-grow">
         <Hero profile={profile} />

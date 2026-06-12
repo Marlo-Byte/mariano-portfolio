@@ -1,11 +1,13 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ExternalLink, Terminal } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ExternalLink, Terminal, Search, X, FolderOpen } from 'lucide-react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/client'
 import { ProjectType } from '@/sanity/mockData'
 import { GlowCard } from './ui/GlowCard'
+import { cn } from '@/lib/utils'
 
 interface ProjectsProps {
   projects: ProjectType[]
@@ -30,6 +32,44 @@ function GithubIcon({ className }: { className?: string }) {
 }
 
 export function Projects({ projects, githubUrl }: ProjectsProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedTag, setSelectedTag] = useState('Todos')
+
+  // Dynamic Tag Compiler
+  const availableTags = useMemo(() => {
+    const counts: { [key: string]: number } = {}
+    projects.forEach(project => {
+      project.tags?.forEach(tag => {
+        counts[tag] = (counts[tag] || 0) + 1
+      })
+    })
+    // Sort tags by frequency, then alphabetically
+    const sortedTags = Object.keys(counts).sort((a, b) => {
+      if (counts[b] !== counts[a]) {
+        return counts[b] - counts[a]
+      }
+      return a.localeCompare(b)
+    })
+    return ['Todos', ...sortedTags.slice(0, 6)]
+  }, [projects])
+
+  // Filter projects by both Selected Tag and Search Query
+  const filteredProjects = useMemo(() => {
+    return projects.filter(project => {
+      const matchesTag = selectedTag === 'Todos' || project.tags?.includes(selectedTag)
+      
+      const query = searchQuery.trim().toLowerCase()
+      if (!query) return matchesTag
+      
+      const matchesSearch = 
+        project.title?.toLowerCase().includes(query) ||
+        project.description?.toLowerCase().includes(query) ||
+        project.tags?.some(tag => tag.toLowerCase().includes(query))
+        
+      return matchesTag && matchesSearch
+    })
+  }, [projects, selectedTag, searchQuery])
+
   // Framer Motion container options
   const containerVariants = {
     hidden: {},
@@ -67,117 +107,219 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
           </p>
         </div>
 
+        {/* Filter and Search controls */}
+        <div className="max-w-2xl mx-auto mb-12 flex flex-col items-center gap-6">
+          {/* Search Input */}
+          <div className="relative w-full max-w-md group">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-center">
+              <Search className="absolute left-4 text-slate-400 dark:text-slate-500 w-4 h-4 pointer-events-none transition-colors group-focus-within:text-primary" />
+              <input
+                type="text"
+                placeholder="Buscar por tecnología, título o descripción..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-11 pr-10 py-3 rounded-full border border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-950/30 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-primary/50 dark:focus:ring-primary/30 transition-all text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 p-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Technology Chips */}
+          <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl">
+            {availableTags.map((tag) => {
+              const isSelected = selectedTag === tag
+              return (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedTag(tag)}
+                  className="relative px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 select-none overflow-hidden cursor-pointer"
+                >
+                  {isSelected && (
+                    <motion.span
+                      layoutId="activeTagBg"
+                      className="absolute inset-0 bg-primary rounded-full"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span className={cn(
+                    "relative z-10 transition-colors duration-300",
+                    isSelected 
+                      ? "text-white" 
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  )}>
+                    {tag}
+                  </span>
+                  {!isSelected && (
+                    <span className="absolute inset-0 rounded-full border border-slate-200/60 dark:border-slate-800/60 bg-slate-100/50 dark:bg-slate-900/20 -z-10" />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Projects Grid */}
         <motion.div
+          layout="position"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative"
         >
-          {projects.map((project) => {
-            // Check if Sanity image exists, build URL
-            let imgUrl = ''
-            if (project.image) {
-              try {
-                imgUrl = urlFor(project.image).url() || ''
-              } catch {
-                imgUrl = ''
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project) => {
+              // Check if Sanity image exists, build URL
+              let imgUrl = ''
+              if (project.image) {
+                try {
+                  imgUrl = urlFor(project.image).url() || ''
+                } catch {
+                  imgUrl = ''
+                }
               }
-            }
-            // Fallback to local mockup image if empty
-            const finalImageUrl = imgUrl || project.imageUrlFallback || '/favicon.ico'
+              // Fallback to local mockup image if empty
+              const finalImageUrl = imgUrl || project.imageUrlFallback || '/favicon.ico'
 
-            return (
-              <GlowCard
-                key={project._id}
-                variants={cardVariants}
-                whileHover={{ y: -6 }}
-                className="group flex flex-col h-full"
-                contentClassName="relative overflow-hidden"
-              >
-                
-                {/* Image block with overlay badge & effects */}
-                <div className="relative w-full h-48 sm:h-56 bg-slate-950 overflow-hidden">
-                  
-                  {/* Grayscale to Color Image */}
-                  <Image
-                    src={finalImageUrl}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 opacity-90 group-hover:opacity-100"
-                    unoptimized={finalImageUrl.startsWith('http')} // skip Unsplash optimization error in dev
-                  />
-                  
-                  {/* Gradient shadow overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
-                  
-                  {/* Floating Bento Tag */}
-                  <div className="absolute top-4 left-4 flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-950/80 backdrop-blur-md text-primary border border-primary/20">
-                    <Terminal size={10} />
-                    <span>Proyecto</span>
-                  </div>
-                </div>
-
-                {/* Content block */}
-                <div className="flex flex-col flex-grow p-6 sm:p-7 justify-between">
-                  <div className="space-y-3">
-                    {/* Title */}
-                    <h3 className="text-xl font-extrabold text-slate-800 dark:text-white group-hover:text-primary transition-colors duration-200">
-                      {project.title}
-                    </h3>
+              return (
+                <motion.div
+                  layout
+                  key={project._id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                  className="h-full"
+                >
+                  <GlowCard
+                    whileHover={{ y: -6 }}
+                    className="group flex flex-col h-full"
+                    contentClassName="relative overflow-hidden"
+                  >
                     
-                    {/* Description */}
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {project.description}
-                    </p>
-
-                    {/* Tech Badges */}
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border border-slate-200/40 dark:border-slate-800/40"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    {/* Image block with overlay badge & effects */}
+                    <div className="relative w-full h-48 sm:h-56 bg-slate-950 overflow-hidden">
+                      
+                      {/* Grayscale to Color Image */}
+                      <Image
+                        src={finalImageUrl}
+                        alt={project.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 opacity-90 group-hover:opacity-100"
+                        unoptimized={finalImageUrl.startsWith('http')} // skip Unsplash optimization error in dev
+                      />
+                      
+                      {/* Gradient shadow overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
+                      
+                      {/* Floating Bento Tag */}
+                      <div className="absolute top-4 left-4 flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-950/80 backdrop-blur-md text-primary border border-primary/20">
+                        <Terminal size={10} />
+                        <span>Proyecto</span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Actions Footer */}
-                  <div className="flex items-center gap-3 pt-6 mt-6 border-t border-slate-200/50 dark:border-slate-800/50">
-                    {project.codeUrl && (
-                      <a
-                        href={project.codeUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800/40 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5 transition-all duration-200"
-                      >
-                        <GithubIcon className="w-3.5 h-3.5" />
-                        <span>Código</span>
-                      </a>
-                    )}
+                    {/* Content block */}
+                    <div className="flex flex-col flex-grow p-6 sm:p-7 justify-between">
+                      <div className="space-y-3">
+                        {/* Title */}
+                        <h3 className="text-xl font-extrabold text-slate-800 dark:text-white group-hover:text-primary transition-colors duration-200">
+                          {project.title}
+                        </h3>
+                        
+                        {/* Description */}
+                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                          {project.description}
+                        </p>
 
-                    {project.demoUrl && (
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex-1 py-2 px-3 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-hover flex items-center justify-center gap-1.5 shadow-sm hover:shadow-primary/20 transition-all duration-200"
-                      >
-                        <span>Ver Demo</span>
-                        <ExternalLink size={12} />
-                      </a>
-                    )}
-                  </div>
-                </div>
+                        {/* Tech Badges */}
+                        <div className="flex flex-wrap gap-1.5 pt-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border border-slate-200/40 dark:border-slate-800/40"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
 
-              </GlowCard>
-            )
-          })}
+                      {/* Actions Footer */}
+                      <div className="flex items-center gap-3 pt-6 mt-6 border-t border-slate-200/50 dark:border-slate-800/50">
+                        {project.codeUrl && (
+                          <a
+                            href={project.codeUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800/40 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-1.5 transition-all duration-200"
+                          >
+                            <GithubIcon className="w-3.5 h-3.5" />
+                            <span>Código</span>
+                          </a>
+                        )}
+
+                        {project.demoUrl && (
+                          <a
+                            href={project.demoUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1 py-2 px-3 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-hover flex items-center justify-center gap-1.5 shadow-sm hover:shadow-primary/20 transition-all duration-200"
+                          >
+                            <span>Ver Demo</span>
+                            <ExternalLink size={12} />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                  </GlowCard>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </motion.div>
+
+        {/* Empty State */}
+        <AnimatePresence mode="wait">
+          {filteredProjects.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-md mx-auto text-center py-16 px-6 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 backdrop-blur-sm mt-8"
+            >
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center mx-auto mb-4 text-slate-400 dark:text-slate-500">
+                <FolderOpen size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">
+                No se encontraron proyectos
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                No pudimos encontrar ningún proyecto que coincida con &quot;{searchQuery}&quot; {selectedTag !== 'Todos' && `en la categoría ${selectedTag}`}.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('')
+                  setSelectedTag('Todos')
+                }}
+                className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-hover shadow-sm hover:shadow-primary/20 transition-all duration-200 cursor-pointer"
+              >
+                Restablecer filtros
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {/* Extra Bottom Call to Action */}
         {githubUrl && (
@@ -200,3 +342,4 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
     </section>
   )
 }
+

@@ -1,11 +1,13 @@
 'use client'
 
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowDown, Mail, Terminal } from 'lucide-react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/client'
 import { ProfileType } from '@/sanity/mockData'
 import { BackgroundBeamsWithCollision } from './ui/background-beams-with-collision'
+import { TiltCard } from './ui/TiltCard'
 
 interface HeroProps {
   profile: ProfileType
@@ -46,8 +48,64 @@ function LinkedinIcon({ className }: { className?: string }) {
   )
 }
 
+function TypewriterSubtitle({ words }: { words?: string[] }) {
+  const wordsToUse = useMemo(() => {
+    return words && words.length > 0 ? words : [
+      'Desarrollador Frontend Full-Stack',
+      'Especialista en Next.js & React',
+      'Creador de Experiencias Web Premium',
+      'Apasionado por la Optimización y UX'
+    ]
+  }, [words])
+  const [currentWordIdx, setCurrentWordIdx] = useState(0)
+  const [currentText, setCurrentText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [typingSpeed, setTypingSpeed] = useState(100)
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    const handleType = () => {
+      const fullWord = wordsToUse[currentWordIdx]
+      if (!isDeleting) {
+        setCurrentText(fullWord.substring(0, currentText.length + 1))
+        setTypingSpeed(80)
+
+        if (currentText === fullWord) {
+          timer = setTimeout(() => {
+            setIsDeleting(true)
+          }, 2000)
+          return
+        }
+      } else {
+        setCurrentText(fullWord.substring(0, currentText.length - 1))
+        setTypingSpeed(40)
+
+        if (currentText === '') {
+          setIsDeleting(false)
+          setCurrentWordIdx((prev) => (prev + 1) % wordsToUse.length)
+          setTypingSpeed(250)
+          return
+        }
+      }
+
+      timer = setTimeout(handleType, typingSpeed)
+    }
+
+    timer = setTimeout(handleType, typingSpeed)
+    return () => clearTimeout(timer)
+  }, [currentText, isDeleting, currentWordIdx, typingSpeed, wordsToUse])
+
+  return (
+    <div className="flex items-center justify-center lg:justify-start min-h-[36px]">
+      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200">
+        {currentText}
+      </span>
+      <span className="w-[3px] h-6 sm:h-8 bg-primary ml-2 animate-pulse" />
+    </div>
+  )
+}
+
 export function Hero({ profile }: HeroProps) {
-  // Resolve profile avatar image URL
   let avatarUrl = ''
   if (profile.avatar) {
     try {
@@ -58,13 +116,12 @@ export function Hero({ profile }: HeroProps) {
   }
   const finalAvatarUrl = avatarUrl || profile.avatarUrlFallback || ''
 
-  // Framer Motion staggered variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.12,
       },
     },
   }
@@ -78,18 +135,28 @@ export function Hero({ profile }: HeroProps) {
     },
   }
 
-  const stackBadges = ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind v4', 'Sanity CMS']
+  const techBadges = [
+    { name: 'Next.js 16', class: 'border-slate-500/20 bg-slate-500/5 text-slate-800 dark:text-slate-200 hover:border-slate-800 dark:hover:border-white' },
+    { name: 'React 19', class: 'border-cyan-500/20 bg-cyan-500/5 text-cyan-600 dark:text-cyan-300 hover:border-cyan-500 hover:shadow-[0_0_8px_rgba(6,182,212,0.15)]' },
+    { name: 'TypeScript', class: 'border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-300 hover:border-blue-500 hover:shadow-[0_0_8px_rgba(59,130,246,0.15)]' },
+    { name: 'Tailwind v4', class: 'border-teal-500/20 bg-teal-500/5 text-teal-600 dark:text-teal-300 hover:border-teal-500 hover:shadow-[0_0_8px_rgba(20,184,166,0.15)]' },
+    { name: 'Sanity CMS', class: 'border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-300 hover:border-red-500 hover:shadow-[0_0_8px_rgba(239,68,68,0.15)]' }
+  ]
 
   return (
     <section id="home" className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+      <style>{`
+        @keyframes shift-gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
       
       {/* Background Neon Gradients & Grid Pattern */}
       <div className="absolute inset-0 z-0">
-        {/* Glow Left (Primary color blur) */}
         <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-primary/15 dark:bg-primary/5 blur-[100px] md:blur-[150px] animate-pulse duration-[8000ms]" />
-        {/* Glow Right (Cyan accent blur) */}
         <div className="absolute bottom-1/4 right-1/3 translate-x-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-accent/15 dark:bg-accent/5 blur-[100px] md:blur-[150px] animate-pulse duration-[6000ms]" />
-        {/* Sleek dotted/grid texture */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.04] dark:opacity-[0.06]" />
       </div>
 
@@ -105,41 +172,53 @@ export function Hero({ profile }: HeroProps) {
               className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6 order-2 lg:order-1"
             >
               {/* Pulsing Badge */}
-              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold tracking-wider text-primary dark:text-indigo-300 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 uppercase">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span className="w-2 h-2 rounded-full bg-emerald-500 absolute" />
-                <span>Disponible para trabajar</span>
-              </motion.div>
+              <motion.a
+                variants={itemVariants}
+                href="#contact"
+                whileHover={{ y: -2, scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 dark:border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-500/50 dark:hover:border-emerald-500/60 uppercase select-none transition-all duration-300 cursor-pointer"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                </span>
+                <span>{profile.availabilityStatus || 'Disponible para nuevos proyectos • ¡Hablemos! 🚀'}</span>
+              </motion.a>
 
               {/* Heading Stagger */}
               <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-none text-slate-900 dark:text-white">
                 Hola, soy{' '}
-                <span className="bg-gradient-to-r from-primary via-indigo-500 to-accent bg-clip-text text-transparent block sm:inline">
+                <span 
+                  className="bg-gradient-to-r from-primary via-indigo-500 via-purple-500 to-accent bg-clip-text text-transparent block sm:inline select-none"
+                  style={{
+                    backgroundSize: '200% auto',
+                    animation: 'shift-gradient 6s linear infinite'
+                  }}
+                >
                   {profile.name}
                 </span>
               </motion.h1>
 
-              {/* Subheading with neon-accent bar */}
-              <motion.div variants={itemVariants} className="space-y-1">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200">
-                  {profile.role}
-                </h2>
+              {/* Subheading with Typewriter & underline */}
+              <motion.div variants={itemVariants} className="space-y-3 w-full">
+                <TypewriterSubtitle words={profile.typewriterWords} />
                 <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto lg:mx-0" />
               </motion.div>
 
               {/* Bio Description */}
-              <motion.p variants={itemVariants} className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+              <motion.p variants={itemVariants} className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed font-medium">
                 {profile.bio}
               </motion.p>
 
               {/* Micro Tech Tags */}
               <motion.div variants={itemVariants} className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                {stackBadges.map((badge) => (
+                {techBadges.map((badge) => (
                   <span
-                    key={badge}
-                    className="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-800/50"
+                    key={badge.name}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm transition-all duration-300 cursor-default select-none ${badge.class}`}
                   >
-                    {badge}
+                    {badge.name}
                   </span>
                 ))}
               </motion.div>
@@ -151,7 +230,7 @@ export function Hero({ profile }: HeroProps) {
                     href={profile.githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-200"
+                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-300 hover:scale-110 active:scale-95 shadow-sm"
                     aria-label="GitHub"
                   >
                     <GithubIcon className="w-5 h-5" />
@@ -162,7 +241,7 @@ export function Hero({ profile }: HeroProps) {
                     href={profile.linkedinUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-200"
+                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-300 hover:scale-110 active:scale-95 shadow-sm"
                     aria-label="LinkedIn"
                   >
                     <LinkedinIcon className="w-5 h-5" />
@@ -171,7 +250,7 @@ export function Hero({ profile }: HeroProps) {
                 {profile.email && (
                   <a
                     href={`mailto:${profile.email}`}
-                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-200"
+                    className="p-3 rounded-xl glass-effect text-slate-600 hover:text-primary dark:text-slate-400 dark:hover:text-primary border hover:border-primary/30 transition-all duration-300 hover:scale-110 active:scale-95 shadow-sm"
                     aria-label="Email"
                   >
                     <Mail size={20} />
@@ -183,13 +262,14 @@ export function Hero({ profile }: HeroProps) {
               <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
                 <a
                   href="#projects"
-                  className="px-8 py-3.5 rounded-xl text-white font-medium bg-primary hover:bg-primary-hover shadow-lg hover:shadow-primary/30 transition-all duration-200 neon-glow"
+                  className="group relative px-8 py-3.5 rounded-xl text-white font-medium bg-primary hover:bg-primary-hover shadow-lg hover:shadow-primary/30 transition-all duration-300 overflow-hidden cursor-pointer select-none"
                 >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-indigo-500 to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
                   Ver Proyectos
                 </a>
                 <a
                   href="#contact"
-                  className="px-8 py-3.5 rounded-xl font-medium glass-effect text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border transition-all duration-200"
+                  className="px-8 py-3.5 rounded-xl font-medium glass-effect text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border hover:border-primary/40 transition-all duration-300 cursor-pointer select-none"
                 >
                   Hablemos
                 </a>
@@ -198,11 +278,13 @@ export function Hero({ profile }: HeroProps) {
 
             {/* Right Side: Floating Photo & Code Widget (Bento layout) */}
             <div className="lg:col-span-5 flex justify-center items-center order-1 lg:order-2">
-              <motion.div
+              <TiltCard
+                useGlassStyles={false}
+                maxTilt={12}
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.7, type: 'spring', stiffness: 60 }}
-                className="relative w-72 h-72 sm:w-96 sm:h-96"
+                className="relative w-72 h-72 sm:w-96 sm:h-96 preserve-3d"
               >
                 
                 {/* Backlight Ambient Glow */}
@@ -212,7 +294,7 @@ export function Hero({ profile }: HeroProps) {
                 <motion.div
                   animate={{ y: [0, -8, 0] }}
                   transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-                  className="relative w-full h-full rounded-[2rem] p-[2px] bg-gradient-to-tr from-primary/40 via-indigo-500/20 to-accent/40 shadow-2xl overflow-hidden"
+                  className="relative w-full h-full rounded-[2rem] p-[2px] bg-gradient-to-tr from-primary/40 via-indigo-500/20 to-accent/40 shadow-2xl overflow-hidden transform-gpu translate-z-12"
                 >
                   <div className="absolute inset-[2px] rounded-[2rem] overflow-hidden bg-slate-50 dark:bg-slate-900 border border-slate-200/20 dark:border-slate-800/40">
                     {finalAvatarUrl && (
@@ -237,19 +319,19 @@ export function Hero({ profile }: HeroProps) {
                   animate={{ x: 0, y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
                   whileHover={{ scale: 1.05 }}
-                  className="absolute -bottom-6 -left-6 sm:-left-12 glass-effect p-4 sm:p-5 rounded-2xl border shadow-xl flex flex-col space-y-2 max-w-[240px] sm:max-w-[280px]"
+                  className="absolute -bottom-6 -left-6 sm:-left-12 glass-effect p-4 sm:p-5 rounded-2xl border shadow-xl flex flex-col space-y-2 max-w-[240px] sm:max-w-[280px] transform-gpu translate-z-24 hover:shadow-primary/10 transition-shadow duration-300"
                 >
                   <div className="flex items-center gap-1.5 pb-2 border-b border-slate-200/50 dark:border-slate-800/50">
                     <Terminal size={14} className="text-primary" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Mariano.ts</span>
                     <div className="flex gap-1 ml-auto">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse [animation-delay:0.2s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse [animation-delay:0.4s]" />
                     </div>
                   </div>
                   
-                  <code className="text-[10px] sm:text-xs font-mono text-slate-600 dark:text-slate-300 space-y-1">
+                  <code className="text-[10px] sm:text-xs font-mono text-slate-600 dark:text-slate-300 space-y-1 select-none">
                     <p className="text-purple-500 dark:text-indigo-400">
                       const <span className="text-blue-500 dark:text-cyan-400">dev</span> = &#123;
                     </p>
@@ -266,7 +348,7 @@ export function Hero({ profile }: HeroProps) {
                   </code>
                 </motion.div>
 
-              </motion.div>
+              </TiltCard>
             </div>
 
           </div>
