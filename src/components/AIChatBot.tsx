@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, Bot, Sparkles, AlertCircle, FileText } from 'lucide-react'
+import { X, Send, Bot, Sparkles, AlertCircle, FileText, Cpu, Code2 } from 'lucide-react'
 import { ProfileType, ProjectType } from '@/sanity/mockData'
 import { getFileUrl } from '@/sanity/client'
 
@@ -197,6 +197,48 @@ function StatsCard({ stats }: { stats?: Array<{ label: string; value: string }> 
       </div>
     </div>
   )
+}
+
+type AvatarState = 'idle' | 'thinking' | 'technical' | 'contact' | 'cv' | 'success' | 'error'
+
+function DynamicAvatar({ state, size = 16, className = '' }: { state: AvatarState; size?: number; className?: string }) {
+  switch (state) {
+    case 'thinking':
+      return <Cpu size={size} className={`text-accent animate-spin ${className}`} />
+    case 'technical':
+      return <Code2 size={size} className={`text-emerald-500 animate-pulse ${className}`} />
+    case 'contact':
+      return <Send size={size} className={`text-violet-500 ${className}`} />
+    case 'cv':
+      return <FileText size={size} className={`text-rose-500 ${className}`} />
+    case 'success':
+      return <Sparkles size={size} className={`text-yellow-500 animate-pulse fill-yellow-500/20 ${className}`} />
+    case 'error':
+      return <AlertCircle size={size} className={`text-rose-500 animate-bounce ${className}`} />
+    case 'idle':
+    default:
+      return <Bot size={size} className={`text-primary ${className}`} />
+  }
+}
+
+function getMessageState(content: string): AvatarState {
+  const text = content.toLowerCase()
+  if (text.includes('[card:contact]') || text.includes('[tag:contact]') || text.includes('correo') || text.includes('email') || text.includes('contacto') || text.includes('linkedin') || text.includes('github') || text.includes('redes')) {
+    return 'contact'
+  }
+  if (text.includes('[card:cv]') || text.includes('[tag:cv]') || text.includes('cv') || text.includes('currículum') || text.includes('curriculum') || text.includes('descargar')) {
+    return 'cv'
+  }
+  if (text.includes('[card:projects]') || text.includes('[card:stats]') || text.includes('proyecto') || text.includes('proyectos') || text.includes('código') || text.includes('tecnología') || text.includes('experiencia') || text.includes('skills')) {
+    return 'technical'
+  }
+  if (text.includes('hola') || text.includes('bienvenido') || text.includes('asistente') || text.includes('🤖') || text.includes('✨')) {
+    return 'success'
+  }
+  if (text.includes('lo siento') || text.includes('disculpa') || text.includes('error') || text.includes('fallo') || text.includes('problema')) {
+    return 'error'
+  }
+  return 'idle'
 }
 
 export function AIChatBot({ profile, projects }: { profile: ProfileType; projects: ProjectType[] }) {
@@ -483,18 +525,26 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
             {/* Header */}
             <div className="px-5 py-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-md shadow-primary/10">
-                  <Bot size={18} />
+                <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center shadow-sm relative overflow-hidden group shadow-primary/5">
+                  <DynamicAvatar state={isLoading ? 'thinking' : errorMsg ? 'error' : 'idle'} size={18} />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-50 pointer-events-none" />
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-slate-800 dark:text-white leading-tight flex items-center gap-1">
                     Asistente de {profile.name.split(' ')[0]}
                     <Sparkles size={11} className="text-accent animate-pulse" />
                   </h3>
-                  <span className="text-[10px] text-emerald-500 font-semibold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                    En línea
-                  </span>
+                  {isLoading ? (
+                    <span className="text-[10px] text-primary dark:text-indigo-400 font-bold flex items-center gap-1 animate-pulse">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary dark:bg-indigo-400 animate-ping" />
+                      Escribiendo...
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-emerald-500 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                      En línea
+                    </span>
+                  )}
                 </div>
               </div>
               
@@ -516,8 +566,8 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
                 >
                   <div className="flex gap-2 max-w-[85%] items-start">
                     {msg.role === 'assistant' && (
-                      <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
-                        <Bot size={13} />
+                      <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center shadow-sm flex-shrink-0 mt-0.5 relative overflow-hidden">
+                        <DynamicAvatar state={getMessageState(msg.content)} size={13} />
                       </div>
                     )}
                     <div
@@ -538,8 +588,8 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-2 max-w-[85%] items-center">
-                    <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center text-primary flex-shrink-0">
-                      <Bot size={13} />
+                    <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 flex items-center justify-center shadow-sm flex-shrink-0 relative overflow-hidden">
+                      <DynamicAvatar state="thinking" size={13} />
                     </div>
                     <div className="px-4 py-3 rounded-2xl rounded-tl-none bg-slate-50/90 dark:bg-slate-900/65 border border-slate-200/60 dark:border-slate-800/40 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600 animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -654,10 +704,14 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
           {/* 3D Glass Reflection Shine */}
           <span className="absolute inset-[3px] top-[3px] h-[45%] rounded-t-full bg-gradient-to-b from-white/30 to-transparent z-[3] pointer-events-none" />
 
-          {/* Bouncing AI Sparkles Badge */}
+          {/* AI Badge with State */}
           {!isOpen && (
-            <span className="absolute -top-1.5 -right-1.5 w-5.5 h-5.5 rounded-full bg-accent border-2 border-white dark:border-slate-950 flex items-center justify-center text-white shadow-md animate-bounce z-20">
-              <Sparkles size={10} className="fill-white text-white" />
+            <span className={`absolute -top-1.5 -right-1.5 w-5.5 h-5.5 rounded-full border-2 border-white dark:border-slate-950 flex items-center justify-center text-white shadow-md z-20 ${isLoading ? 'bg-primary animate-pulse' : 'bg-accent animate-bounce'}`}>
+              {isLoading ? (
+                <Cpu size={9} className="animate-spin" />
+              ) : (
+                <Sparkles size={9} className="fill-white text-white" />
+              )}
             </span>
           )}
 
