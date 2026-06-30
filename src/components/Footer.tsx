@@ -198,7 +198,7 @@ export function Footer({ profile }: FooterProps) {
             <div className="flex flex-col gap-3.5 pt-1">
               <a
                 href="#contact"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold bg-primary hover:bg-primary-hover text-white text-xs shadow-md hover:shadow-primary/15 transition-all duration-200 cursor-pointer self-start"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold bg-primary hover:bg-primary-hover text-white dark:text-slate-950 dark:hover:text-white text-xs shadow-md hover:shadow-primary/15 transition-all duration-200 cursor-pointer self-start"
               >
                 <span>Hablemos</span>
                 <Mail size={13} />

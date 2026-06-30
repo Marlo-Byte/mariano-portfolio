@@ -42,7 +42,7 @@ function ContactCard({ email, linkedin, github }: { email: string; linkedin?: st
         </button>
         <a
           href={`mailto:${email}`}
-          className="flex-1 py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-[10px] font-bold text-center transition-all duration-150 active:scale-95 cursor-pointer flex items-center justify-center"
+          className="flex-1 py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white dark:text-slate-950 dark:hover:text-white text-[10px] font-bold text-center transition-all duration-150 active:scale-95 cursor-pointer flex items-center justify-center"
         >
           Escribir email
         </a>
@@ -106,7 +106,7 @@ function CVCard({ resumeUrl }: { resumeUrl: string }) {
         download="CV_Mariano_Lopez.pdf"
         target="_blank"
         rel="noreferrer"
-        className="py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white text-[10px] font-bold transition-all duration-150 active:scale-95 cursor-pointer whitespace-nowrap"
+        className="py-1.5 px-3 rounded-lg bg-primary hover:bg-primary-hover text-white dark:text-slate-950 dark:hover:text-white text-[10px] font-bold transition-all duration-150 active:scale-95 cursor-pointer whitespace-nowrap"
       >
         Descargar
       </a>
@@ -158,7 +158,7 @@ function ProjectsCard({ projects }: { projects: ProjectType[] }) {
                 href={p.demoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-1 px-2 rounded-md bg-primary hover:bg-primary-hover text-white text-[9px] font-bold text-center transition-colors cursor-pointer"
+                className="flex-1 py-1 px-2 rounded-md bg-primary hover:bg-primary-hover text-white dark:text-slate-950 dark:hover:text-white text-[9px] font-bold text-center transition-colors cursor-pointer"
               >
                 Ver Demo
               </a>
@@ -573,7 +573,7 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
                     <div
                       className={`px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed shadow-sm ${
                         msg.role === 'user'
-                          ? 'bg-primary text-white rounded-tr-none'
+                          ? 'bg-primary text-white dark:text-slate-950 rounded-tr-none'
                           : 'bg-slate-50/90 dark:bg-slate-900/65 text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-800/40 rounded-tl-none'
                       }`}
                       style={{ whiteSpace: 'pre-wrap' }}
@@ -645,7 +645,7 @@ export function AIChatBot({ profile, projects }: { profile: ProfileType; project
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="w-9.5 h-9.5 rounded-xl bg-primary hover:bg-primary-hover disabled:opacity-40 text-white flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-md shadow-primary/10 flex-shrink-0"
+                className="w-9.5 h-9.5 rounded-xl bg-primary hover:bg-primary-hover disabled:opacity-40 text-white dark:text-slate-950 dark:hover:text-white flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-md shadow-primary/10 flex-shrink-0"
                 aria-label="Enviar"
               >
                 <Send size={14} />

@@ -259,7 +259,7 @@ export function Contact({ profile }: { profile: ProfileType }) {
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full py-3.5 px-6 rounded-xl font-bold bg-primary hover:bg-primary-hover text-white flex items-center justify-center gap-2 shadow-md hover:shadow-primary/20 transition-all duration-200 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-xl font-bold bg-primary hover:bg-primary-hover text-white dark:text-slate-950 dark:hover:text-white flex items-center justify-center gap-2 shadow-md hover:shadow-primary/20 transition-all duration-200 disabled:opacity-50 cursor-pointer"
               >
                 {status === 'loading' ? (
                   <>

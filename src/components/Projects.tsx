@@ -153,7 +153,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
                   <span className={cn(
                     "relative z-10 transition-colors duration-300",
                     isSelected 
-                      ? "text-white" 
+                      ? "text-white dark:text-slate-950" 
                       : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   )}>
                     {tag}
@@ -274,7 +274,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
                             href={project.demoUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex-1 py-2 px-3 rounded-lg text-xs font-bold text-white bg-primary hover:bg-primary-hover flex items-center justify-center gap-1.5 shadow-sm hover:shadow-primary/20 transition-all duration-200"
+                            className="flex-1 py-2 px-3 rounded-lg text-xs font-bold text-white dark:text-slate-950 dark:hover:text-white bg-primary hover:bg-primary-hover flex items-center justify-center gap-1.5 shadow-sm hover:shadow-primary/20 transition-all duration-200"
                           >
                             <span>Ver Demo</span>
                             <ExternalLink size={12} />
@@ -313,7 +313,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
                   setSearchQuery('')
                   setSelectedTag('Todos')
                 }}
-                className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary-hover shadow-sm hover:shadow-primary/20 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-bold text-white dark:text-slate-950 dark:hover:text-white bg-primary hover:bg-primary-hover shadow-sm hover:shadow-primary/20 transition-all duration-200 cursor-pointer"
               >
                 Restablecer filtros
               </button>

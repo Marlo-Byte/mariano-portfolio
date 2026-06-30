@@ -263,7 +263,7 @@ export function Hero({ profile }: HeroProps) {
               <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
                 <a
                   href="#projects"
-                  className="group relative px-8 py-3.5 rounded-xl text-white font-medium bg-primary hover:bg-primary-hover shadow-lg hover:shadow-primary/30 transition-all duration-300 overflow-hidden cursor-pointer select-none"
+                  className="group relative px-8 py-3.5 rounded-xl text-white dark:text-slate-950 dark:group-hover:text-white font-medium bg-primary hover:bg-primary-hover shadow-lg hover:shadow-primary/30 transition-all duration-300 overflow-hidden cursor-pointer select-none"
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-indigo-500 to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
                   Ver Proyectos
