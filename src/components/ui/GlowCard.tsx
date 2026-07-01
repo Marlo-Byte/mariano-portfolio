@@ -21,11 +21,17 @@ export function GlowCard({
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const [isHovered, setIsHovered] = useState(false)
+  const cardRectRef = React.useRef<{ left: number; top: number }>({ left: 0, top: 0 })
 
-  function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-    const { left, top } = currentTarget.getBoundingClientRect()
-    mouseX.set(clientX - left)
-    mouseY.set(clientY - top)
+  function handleMouseEnter(event: React.MouseEvent) {
+    setIsHovered(true)
+    const rect = event.currentTarget.getBoundingClientRect()
+    cardRectRef.current = { left: rect.left, top: rect.top }
+  }
+
+  function handleMouseMove(event: React.MouseEvent) {
+    mouseX.set(event.clientX - cardRectRef.current.left)
+    mouseY.set(event.clientY - cardRectRef.current.top)
   }
 
   // Radial gradient matching mouse coordinates (uses color-mix on --primary)
@@ -50,7 +56,7 @@ export function GlowCard({
   return (
     <motion.div
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
         "relative rounded-[2rem] overflow-hidden border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/40 backdrop-blur-md transition-shadow duration-300 shadow-sm flex flex-col",

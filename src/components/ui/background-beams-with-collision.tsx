@@ -126,18 +126,36 @@ const CollisionMechanism = ({
   });
   const [beamKey, setBeamKey] = useState(0);
   const [cycleCollisionDetected, setCycleCollisionDetected] = useState(false);
+  const cachedRectsRef = useRef<{
+    parent: DOMRect | null;
+    container: DOMRect | null;
+  }>({ parent: null, container: null });
+
+  useEffect(() => {
+    const updateRects = () => {
+      if (parentRef.current && containerRef.current) {
+        cachedRectsRef.current = {
+          parent: parentRef.current.getBoundingClientRect(),
+          container: containerRef.current.getBoundingClientRect(),
+        };
+      }
+    };
+    updateRects();
+    window.addEventListener("resize", updateRects);
+    return () => window.removeEventListener("resize", updateRects);
+  }, [parentRef, containerRef]);
  
   useEffect(() => {
     const checkCollision = () => {
       if (
         beamRef.current &&
-        containerRef.current &&
-        parentRef.current &&
+        cachedRectsRef.current.container &&
+        cachedRectsRef.current.parent &&
         !cycleCollisionDetected
       ) {
         const beamRect = beamRef.current.getBoundingClientRect();
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const parentRect = parentRef.current.getBoundingClientRect();
+        const containerRect = cachedRectsRef.current.container;
+        const parentRect = cachedRectsRef.current.parent;
  
         if (beamRect.bottom >= containerRect.top) {
           const relativeX =
@@ -156,10 +174,10 @@ const CollisionMechanism = ({
       }
     };
  
-    const animationInterval = setInterval(checkCollision, 50);
+    const animationInterval = setInterval(checkCollision, 100);
  
     return () => clearInterval(animationInterval);
-  }, [cycleCollisionDetected, containerRef, parentRef]);
+  }, [cycleCollisionDetected]);
  
   useEffect(() => {
     if (collision.detected && collision.coordinates) {

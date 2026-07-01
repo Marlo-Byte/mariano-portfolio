@@ -24,8 +24,10 @@ export function urlFor(source: Parameters<typeof builder.image>[0] | null | unde
       fit: () => mockBuilder,
       url: () => '',
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return mockBuilder as any;
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return builder.image(source) as any;
 }
 

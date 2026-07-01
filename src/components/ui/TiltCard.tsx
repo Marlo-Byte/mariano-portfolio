@@ -56,17 +56,14 @@ export function TiltCard({
   `
 
   const [isHovered, setIsHovered] = useState(false)
+  const cardRectRef = useRef<{ left: number; top: number; width: number; height: number }>({ left: 0, top: 0, width: 0, height: 0 })
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const card = cardRef.current
-    if (!card) return
+    const rect = cardRectRef.current
+    if (rect.width === 0) return
 
-    const rect = card.getBoundingClientRect()
-    const width = rect.width
-    const height = rect.height
-    
-    const normalizedX = (e.clientX - rect.left) / width - 0.5
-    const normalizedY = (e.clientY - rect.top) / height - 0.5
+    const normalizedX = (e.clientX - rect.left) / rect.width - 0.5
+    const normalizedY = (e.clientY - rect.top) / rect.height - 0.5
 
     x.set(normalizedX)
     y.set(normalizedY)
@@ -80,6 +77,16 @@ export function TiltCard({
 
   function handleMouseEnter() {
     setIsHovered(true)
+    const card = cardRef.current
+    if (card) {
+      const rect = card.getBoundingClientRect()
+      cardRectRef.current = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width || 1,
+        height: rect.height || 1,
+      }
+    }
   }
 
   return (
