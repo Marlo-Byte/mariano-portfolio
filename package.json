@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "unlighthouse": "unlighthouse --site http://localhost:3000",
-    "unlighthouse:prod": "unlighthouse --site https://mariano-portfolio-indol.vercel.app"
+    "unlighthouse": "npx unlighthouse --site http://localhost:3000",
+    "unlighthouse:prod": "npx unlighthouse --site https://mariano-portfolio-indol.vercel.app"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

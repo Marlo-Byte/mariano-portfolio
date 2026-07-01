@@ -182,7 +182,7 @@ export function Projects({ projects, githubUrl }: ProjectsProps) {
               let imgUrl = ''
               if (project.image) {
                 try {
-                  imgUrl = urlFor(project.image).url() || ''
+                  imgUrl = urlFor(project.image).format('webp').quality(80).url() || ''
                 } catch {
                   imgUrl = ''
                 }

@@ -16,11 +16,17 @@ const builder = createImageUrlBuilder(client)
 export function urlFor(source: Parameters<typeof builder.image>[0] | null | undefined) {
   // If no source is passed, or if we have placeholder projectId, return a fallback string
   if (!source || projectId === 'placeholder' || (typeof source === 'object' && source !== null && !('asset' in source))) {
-    return {
+    const mockBuilder = {
+      format: () => mockBuilder,
+      quality: () => mockBuilder,
+      width: () => mockBuilder,
+      height: () => mockBuilder,
+      fit: () => mockBuilder,
       url: () => '',
-    }
+    };
+    return mockBuilder as any;
   }
-  return builder.image(source)
+  return builder.image(source) as any;
 }
 
 export function getFileUrl(source: { asset: { _ref: string } } | null | undefined) {

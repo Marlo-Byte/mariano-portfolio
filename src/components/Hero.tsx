@@ -109,7 +109,7 @@ export function Hero({ profile }: HeroProps) {
   let avatarUrl = ''
   if (profile.avatar) {
     try {
-      avatarUrl = urlFor(profile.avatar).url() || ''
+      avatarUrl = urlFor(profile.avatar).format('webp').quality(80).url() || ''
     } catch {
       avatarUrl = ''
     }
